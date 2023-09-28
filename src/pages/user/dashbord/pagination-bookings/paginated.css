@@ -1,0 +1,33 @@
+
+
+.user-paginated-item{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    grid-column: span 2 / span 2;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.paginated-main{
+    overflow-x: auto;
+    overflow-y: hidden;
+    min-height: fit-content;
+}
+
+.col-6{
+    grid-column: span 6 / span 6 !important;
+}
+
+.user-paginated-item.col-4{
+    grid-column: span 4 / span 4;
+}
+
+.user-paginated-item.col-3{
+    grid-column: span 3 / span 3;
+}
+
+
+.bold-text{
+    font-weight: 550;
+}

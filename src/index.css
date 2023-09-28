@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300&family=Open+Sans:ital,wght@0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=PT+Sans:wght@400;700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,900;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Tilt+Neon&display=swap');
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-y: auto;
+}
+body::-webkit-scrollbar {
+  display: none;
+}
+* {
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+p,
+a,
+h1,
+h2,
+h3,
+h4,
+h5,
+span {
+  margin: 0;
+  padding: 0;
+}
+a{
+  text-decoration: none;
+  color: inherit;
+}
+ul{
+  margin: 0;
+  padding: 0;
+}
+:root {
+  --main-major: #55B9A9;
+  --bg-button: #caab72;
+  --bg-contrast: #2a2d3e;
+  --bg-main: #ffffff;
+  --main-bg: white;
+  --text-color: white;
+  --text-blur: #a9aaac;
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 2rem;
+  --spacing-4: 8px;
+  --spacing-22: 44px;
+  --rounded-sm: 6px;
+  --fs-2lg: 18px;
+  --fs-lg: 16px;
+  --fs-2xl: 20px;
+  --fs-4xl: 24px;
+}

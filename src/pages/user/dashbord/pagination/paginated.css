@@ -1,0 +1,33 @@
+.user.grid-container{
+    display: grid;
+    padding: 12px;
+    min-width: 1400px;
+    border-bottom: 2px dashed #e9e8e8;
+    gap: 8px;
+    grid-template-columns: repeat(24, minmax(0, 1fr));
+}
+
+.user-paginated-item{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    grid-column: span 2 / span 2;
+    flex-direction: column;
+    gap: 4px;
+}
+.paginated-main{
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.col-6{
+    grid-column: span 6 / span 6 !important;
+}
+
+.user-paginated-item.col-4{
+    grid-column: span 4 / span 4;
+}
+
+.bold-text{
+    font-weight: 550;
+}

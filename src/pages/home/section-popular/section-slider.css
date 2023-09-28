@@ -1,0 +1,270 @@
+.slider {
+    background: transparent !important;
+    border: none;
+    margin-top: 12px;
+}
+.slick-slide {
+    background: transparent !important;
+    padding: 0 8px;
+    outline: none;
+}
+
+.slick-track {
+    padding: 12px 0;
+}
+
+.slider-sport .slick-list .slick-track .slick-slide > div {
+    background-color: white;
+    padding: 16px;
+    border-radius: 16px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    height: fit-content;
+    cursor: pointer;
+    -webkit-box-shadow: 2px 4px 10px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 2px 4px 10px 0 rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+    background-repeat: no-repeat;
+    background-position: right top;
+    background-size: contain;
+    -webkit-transition: all ease 0.5s;
+    -o-transition: all ease 0.5s;
+    transition: all ease 0.5s;
+}
+.slider-sport .slick-list .slick-track .slick-slide > div:hover {
+    transform: scale(1.05);
+    z-index: 1;
+}
+
+.slider-sport.no-scale .slick-list .slick-track .slick-slide > div:hover {
+    transform: scale(1);
+    z-index: 0;
+}
+
+.slider-sport.b .slick-list .slick-track .slick-slide > div {
+    height: fit-content;
+    padding: 0;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.info-box {
+    position: absolute;
+    display: flex;
+    bottom: 0;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 24px 24px 24px;
+}
+
+.button-info-box {
+    padding: 12px 18px;
+    border-radius: 100px;
+    color: white;
+    font-size: 16px;
+    font-weight: 550;
+    background-color: transparent;
+    border: 1px solid white;
+}
+
+.slick-slide > div .mcard.match-sched-card {
+    padding: 8px;
+}
+.slick-slide > div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slick-slide > div .mcard.match-sched-card .flex-row {
+    display: flex;
+    flex-direction: row;
+    gap: 0px;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.mcard.match-sched-card .flex-row .odds-league {
+    display: inline-block;
+    font-weight: 900;
+    max-width: 70%;
+    width: auto;
+    vertical-align: middle;
+    font-size: 12px;
+    font-weight: 550;
+    white-space: nowrap;
+    overflow: hidden;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+}
+
+.odds-date {
+    font-size: 12px;
+    font-weight: 550;
+    white-space: nowrap;
+    vertical-align: middle;
+    text-transform: capitalize;
+}
+
+.mcard.match-sched-card .flex-row .line {
+    background-color: #d3d4d7;
+    height: 18px;
+    width: 2px;
+}
+
+.mcard.match-sched-card .flex-row .row.left {
+    -webkit-box-flex: 1;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    height: fit-content;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+
+.mcard-inner{
+    max-width: none;
+    border-radius: 12px;
+    border: 1px solid rgb(228, 228, 228);
+    padding: 10px;
+    background-color: rgb(255, 255, 255);
+}
+
+.frame-img-card{
+    position: relative;
+    min-height: 150px;
+    margin-bottom: 16px;
+}
+
+.img-ab{
+    display: block;
+    overflow: hidden;
+    position: absolute;
+    inset: 0px;
+    box-sizing: border-box;
+    margin: 0px;
+}
+
+.img-ab img{
+    position: absolute;
+    inset: 0px;
+    box-sizing: border-box;
+    padding: 0px;
+    border: none;
+    margin: auto;
+    display: block;
+    width: 0px;
+    height: 0px;
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.title-tour{
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    line-height: 1.15;
+    min-height: 36px;
+    display: -webkit-box;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    overflow-wrap: normal;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.dsc-flex-row{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.dsc-location{
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    padding: 6px 10px;
+    color: rgb(0, 191, 168) !important;
+    font-weight: 500;
+    background-color: rgba(0, 191, 168, 0.1);
+    border-radius: 22px;
+}
+
+.dsc-location svg{
+    width: 16px;
+    margin-right: 6px;
+}
+
+.locaiton-text{
+    font-size: 13px;
+    color: black;
+    font-weight: 500;
+}
+
+.botton-in-card{
+    margin-top: 16px;
+    border-top: 1px solid rgb(227, 227, 227);
+    padding-top: 16px;
+    white-space: nowrap;
+    display: flex;
+    gap: 6px;
+    flex-direction: row;
+    text-align: center;
+    justify-content: center;
+}
+
+.text-mini{
+    color: black;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.text-mini.bold{
+    font-weight: 700;
+}
+
+.slider-action.section{
+    align-items: center;
+    background-color: #dfdfe47a;
+    border-radius: 99999px;
+    color: #f8f8f8;
+    cursor: pointer;
+    display: flex;
+    font-size: 24px;
+    height: 40px;
+    justify-content: center;
+    padding: 24px;
+    position: absolute;
+    top: 50%;
+    -webkit-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+    transition: all .3s ease;
+    width: 40px;
+    z-index: 1;
+}
+
+.slider-action.section.prev{
+    left: 3rem;
+}

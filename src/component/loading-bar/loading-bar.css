@@ -1,0 +1,17 @@
+.loading-bar-container{
+  width: 100%;
+  border-radius: 2px;
+  overflow: hidden;
+  grid-column: span 2 / span 2;
+}
+
+.loading-bar{
+  background-color: #3554D1;
+  height: 3px;
+}
+
+.progress{
+  font-size: 12px;
+  text-align: right;
+  color: #3554D1;
+}
