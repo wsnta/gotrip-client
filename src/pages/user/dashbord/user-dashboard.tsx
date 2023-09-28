@@ -145,6 +145,7 @@ const UserDashboard = () => {
         }
     }
 
+
     const exportToCSV = () => {
         const ws = XLSX.utils.json_to_sheet(transactionHistory);
         const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
@@ -321,7 +322,7 @@ const UserDashboard = () => {
                             Xuất file
                         </Button>
                     </div>
-                    <div className='paginated-main' style={{ backgroundColor: 'white', padding: '12px' }}>
+                    <div className='paginated-main' style={{ backgroundColor: 'white', padding: '12px', minHeight:'400px' }}>
                         <div className='user grid-container' style={{ backgroundColor: '#F5F5F5' }}>
                             <div className='user-paginated-item'>
                                 <p className='text-truncate text-14 bold-text'>Available Balance</p>
@@ -399,7 +400,7 @@ const UserDashboard = () => {
                             Xuất file
                         </Button>
                     </div>
-                    <div className='paginated-main' style={{ backgroundColor: 'white', padding: '12px' }}>
+                    <div className='paginated-main' style={{ backgroundColor: 'white', padding: '12px', minHeight:'400px' }}>
                         <div className='user grid-container' style={{ backgroundColor: '#F5F5F5' }}>
                             <div className='user-paginated-item'>
                                 <p className='text-truncate text-14 bold-text'>Type</p>

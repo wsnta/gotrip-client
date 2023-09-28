@@ -41,6 +41,7 @@ const PaginatedList = (props: IProps) => {
   const [retryCount, setRetryCount] = useState<number>(0);
   const maxRetries = 4;
 
+  console.log(paginatedData)
   useEffect(() => {
     fetch('https://api64.ipify.org?format=json')
       .then(response => response.json())

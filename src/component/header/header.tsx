@@ -24,9 +24,30 @@ export default function Header() {
     const [api, contextHolder] = notification.useNotification();
     const [update, setUpdate] = useState(false)
     const [updateBalance, setUpdateBalance] = useState(false)
-    const showModal = () => {
-        dispatch(setOpenModalAuth(true))
-    };
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                const checked = await refreshAccessToken();
+                dispatch(setUserLoginInf(checked))
+                dispatch(setRedirectToLogin(false));
+            } catch (error) {
+                dispatch(setRedirectToLogin(true));
+            }
+        };
+
+        checkAuth();
+    }, [dispatch, history]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await axios.get(`${serverHostIO}/api/get-user-inf/${userLoginInf.userId}`)
+            dispatch(setUserInf(res.data))
+        }
+        if (userLoginInf) {
+            fetchData()
+        }
+    }, [dispatch, redirectToLogin, userLoginInf])
 
     const openNotification = (placement: NotificationPlacement, value: string) => {
         api.info({
@@ -90,30 +111,6 @@ export default function Header() {
     }, []);
 
     useEffect(() => {
-        const checkAuth = async () => {
-            try {
-                const checked = await refreshAccessToken();
-                dispatch(setUserLoginInf(checked))
-                dispatch(setRedirectToLogin(false));
-            } catch (error) {
-                dispatch(setRedirectToLogin(true));
-            }
-        };
-
-        checkAuth();
-    }, [dispatch, history]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            const res = await axios.get(`${serverHostIO}/api/get-user-inf/${userLoginInf.userId}`)
-            dispatch(setUserInf(res.data))
-        }
-        if (userLoginInf) {
-            fetchData()
-        }
-    }, [dispatch, redirectToLogin, userLoginInf])
-
-    useEffect(() => {
         socket.on('transactions', async (data) => {
             const bookingService = localStorage.getItem('bookingService')
             if (bookingService) {
@@ -169,6 +166,8 @@ export default function Header() {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updateBalance])
+
+    console.log('openModalAuth', openModalAuth)
 
     return (
         <div id="header">
@@ -231,7 +230,7 @@ export default function Header() {
                     </Link>
                 </li>
                 {userLoginInf == null
-                    ? <button className='header-button display' onClick={showModal}>
+                    ? <button className='header-button display' onClick={() => dispatch(setOpenModalAuth(true))}>
                         <span className="header-title">
                             Login
                         </span>

@@ -45,16 +45,16 @@ const PaginatedListBookings = (props: IProps) => {
     if (userLoginInf) {
       try {
         setIsLoading(true)
-        await axios.delete(`${serverHostIO}/api/delete-by-admin/${bookingId}`, {
+        const res = await axios.delete(`${serverHostIO}/api/delete-by-admin/${bookingId}`, {
           headers: {
             Authorization: `${userLoginInf.accessToken}`,
           },
         })
         handleRefetch(1);
-        openNotification('topLeft', `Xóa thành công.`)
+        handleSendMessage(res.data.message)
         setIsLoading(false)
-      } catch (error) {
-        console.log(error)
+      } catch (error:any) {
+        handleSendMessage(error.response.data.error)
       } finally {
         setIsLoading(false)
       }
@@ -169,7 +169,7 @@ const PaginatedListBookings = (props: IProps) => {
       await updatePaymentStatus(bookingId, paymentStatus)
     }
   };
-  console.log(paginatedData)
+
   return (
     <>
       {contextHolder}

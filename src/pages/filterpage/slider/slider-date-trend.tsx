@@ -62,6 +62,7 @@ function SliderDateTrend() {
                     `${serverHostIO}/api/list-price?startPoint=${startPoint}&endPoint=${endPoint}&departDate=${departDate}`
                 )
                 setListTrends(res.data)
+                console.log('res.data',res.data)
             } catch (error) {
                 console.log(error)
             }
