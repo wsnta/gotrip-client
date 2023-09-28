@@ -3,7 +3,7 @@ import { IoMdArrowDropdown } from 'react-icons/io'
 import { faDashboard, faHistory, faGear, faHome, faExpand } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-export const serverHostIO = 'https://server-gotripv2.onrender.com'
+export const serverHostIO = 'https://gotrip-server.onrender.com'
 export const serverKeyG = '7324138533-k6rria5v0kaqsiqk2m6nsqmqbtj3ct2v.apps.googleusercontent.com'
 export const serverKeyF = '791026089420202'
 export const linkList = [
