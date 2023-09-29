@@ -63,14 +63,11 @@ function FilteredListPage() {
     const adults = searchParams.get('adults') ?? '';
     const children = searchParams.get('children') ?? '';
     const inf = searchParams.get('Inf') ?? '';
+    const twoWay = Boolean(searchParams.get('twoWay')) ?? false
     const [open, setOpen] = useState(false);
 
     const { tripType, userLoginInf } = useSelector((state: any) => state)
-    const dispatch = useDispatch()
 
-    const encrypt = (str: string) => {
-        return md5(str);
-    };
     const [filters, setFilters] = useState({
         airline: [] as string[],
         cabin: [] as string[],
@@ -85,12 +82,10 @@ function FilteredListPage() {
     const [paginatedData2, setPaginatedData2] = useState<any[]>([])
     const [ascending, setAscending] = useState<boolean>(false);
     const [loading, setLoading] = useState(true)
-    const [loading2, setLoading2] = useState(true)
     const [pageRevert, setPageRevert] = useState(1)
     const [flashingTab, setFlashingTab] = useState<string>('');
     const [flyingTo, setFlyingTo] = useState('')
     const [flyingToReturn, setFlyingToReturn] = useState('')
-    const [departDay, setDepart] = useState('')
     const [minFareAdtFull, setMinFareAdtFull] = useState(0)
     const [minFareAdtFull2, setMinFareAdtFull2] = useState(0)
     const [minFaresByAirlines, setMinFaresByAirlines] = useState<MinFareByAirlines[]>([]);
@@ -103,18 +98,6 @@ function FilteredListPage() {
     const intervalDuration = 20;
     const [selectedFlight, setSelectedFlight] = useState<FlightTime[]>([]);
     const [selectedFlightEnd, setSelectedFlightEnd] = useState<FlightTime[]>([]);
-
-    const apiUrl = "https://api.vinajet.vn/search-flight";
-
-    const [timeLine, setTimeLine] = useState('01:00')
-
-    const onChangeTimeline = (time: number) => {
-        const hours = Math.floor(time / 60);
-        const minutes = time % 60;
-        const formattedTime = format(new Date().setHours(hours, minutes), 'HH:mm');
-        setTimeLine(formattedTime)
-        setFilters((prevFilters) => ({ ...prevFilters, timeLine: formattedTime }));
-    }
 
     useEffect(() => {
         if (flashingTab) {
@@ -153,18 +136,14 @@ function FilteredListPage() {
         return [];
     };
 
-    const flattenListFlight = (data: any) => {
-        if (data.listFlight && Array.isArray(data.listFlight)) {
-            return data.listFlight;
-        }
-        return [];
-    };
-
     const fetchData = async () => {
+
         const convert = dataCountry.find((element) => element.code === endPoint)?.city ?? ''
         const convertReturn = dataCountry.find((element) => element.code === startPoint)?.city ?? ''
+
         setFlyingTo(convert)
         setFlyingToReturn(convertReturn)
+
         try {
             setLoading(true)
             const agent = userLoginInf
@@ -178,60 +157,28 @@ function FilteredListPage() {
                 };
             const feeResponse = await axios.get(`${serverHostIO}/api/get-fee`);
             const feeValues = feeResponse.data;
-
-            const airlines = ["VJ", "VN", "VU", "QH"];
             const [Adt, Chd, Inf, StartPoint, EndPoint, DepartDate] = [adults, children, inf, startPoint, endPoint, departDate];
-            const AuthorizationCode = await getCode();
 
-            const fetchFlightData = async (airline: string) => {
-                const data = {
-                    AccCode: "VINAJET145",
-                    AgCode: "VINAJET145",
-                    UserLogin: "",
-                    IsTest: false,
-                    Adt: Adt,
-                    Chd: Chd,
-                    Inf: Inf,
-                    IsCompo: false,
-                    ListFlight: [
-                        {
-                            StartPoint: StartPoint,
-                            EndPoint: EndPoint,
-                            DepartDate: DepartDate,
-                            Airline: airline
-                        }
-                    ],
-                    ViewMode: "",
-                    HeaderUser: "",
-                    HeaderPass: "",
-                    ProductKey: "",
-                    LanguageCode: "",
-                    AgentAccount: "",
-                    AgentPassword: "",
-                    Url: ""
-                }
-                return (await axios.post(apiUrl, data, {
-                    headers: {
-                        Authorization: AuthorizationCode,
-                    },
-                })).data;
-            };
+            const responses = await axios.post(`${serverHostIO}/api/get-filght`, {
+                adults: Adt,
+                children: Chd,
+                inf: Inf,
+                startPoint: StartPoint,
+                endPoint: EndPoint,
+                departDate: DepartDate,
+            })
 
-            const responses = await Promise.all(airlines.map(fetchFlightData));
-            dispatch(setAllData(responses))
-            const allDomesticDatas = responses.flatMap((response) => flattenDomesticDatas(response));
+            const allDomesticDatas = responses.data.flatMap((response: any) => flattenDomesticDatas(response));
 
-            allDomesticDatas.forEach((domesticData) => {
+            allDomesticDatas.forEach((domesticData: any) => {
                 const airline = domesticData.airline;
                 domesticData.airlineFee = feeValues[airline + 'FEE'] + agent[airline + 'FEE'];
             });
 
             const minFaresByAirlines: MinFareByAirlines[] = [];
             const minFaresByCabin: MinFareByCabin[] = [];
-            const AllListFlight = allDomesticDatas.flatMap((element) => flattenListFlight(element));
-            dispatch(setAllListFlight(AllListFlight))
 
-            allDomesticDatas.forEach(({ fareAdt, listFlight }) => {
+            allDomesticDatas.forEach(({ fareAdt, listFlight }: any) => {
 
                 listFlight.forEach((segment: { airline: any; }) => {
                     const { airline } = segment;
@@ -273,13 +220,16 @@ function FilteredListPage() {
         }
     };
 
-    const fetchData2 = async () => {
+    const fetchDataReturn = async () => {
+
         const convert = dataCountry.find((element) => element.code === endPoint)?.city ?? ''
         const convertReturn = dataCountry.find((element) => element.code === startPoint)?.city ?? ''
+
         setFlyingTo(convert)
         setFlyingToReturn(convertReturn)
+
         try {
-            setLoading2(true)
+            setLoading(true)
             const agent = userLoginInf
                 ? (await axios.get(`${serverHostIO}/api/get-user-inf/${userLoginInf.userId}`)).data
                 : {
@@ -291,55 +241,21 @@ function FilteredListPage() {
                 };
             const feeResponse = await axios.get(`${serverHostIO}/api/get-fee`);
             const feeValues = feeResponse.data;
+            const [Adt, Chd, Inf, StartPoint, EndPoint, ReturnDate] = [adults, children, inf, startPoint, endPoint, returnDate];
 
-            const airlines = ["VJ", "VN", "VU", "QH"];
-            const Adt = adults;
-            const Chd = children;
-            const Inf = inf;
-            const StartPoint = startPoint;
-            const EndPoint = endPoint;
-            const ReturnDate = returnDate ? returnDate : departDate;
-            const AuthorizationCode = await getCode()
-            if (statusOpenTab2 === true) {
-                const fetchFlightData2 = async (airline: string) => {
-                    const data = {
-                        AccCode: "VINAJET145",
-                        AgCode: "VINAJET145",
-                        UserLogin: "",
-                        IsTest: false,
-                        Adt: Adt,
-                        Chd: Chd,
-                        Inf: Inf,
-                        IsCompo: false,
-                        ListFlight: [
-                            {
-                                StartPoint: EndPoint,
-                                EndPoint: StartPoint,
-                                DepartDate: ReturnDate,
-                                Airline: airline
-                            }
-                        ],
-                        ViewMode: "",
-                        HeaderUser: "",
-                        HeaderPass: "",
-                        ProductKey: "",
-                        LanguageCode: "",
-                        AgentAccount: "",
-                        AgentPassword: "",
-                        Url: ""
-                    }
-                    return (await axios.post(apiUrl, data, {
-                        headers: {
-                            Authorization: AuthorizationCode,
-                        },
-                    })).data;
-                };
+            const responses = await axios.post(`${serverHostIO}/api/get-filght-return`, {
+                adults: Adt,
+                children: Chd,
+                inf: Inf,
+                startPoint: StartPoint,
+                endPoint: EndPoint,
+                returnDate: ReturnDate ?? null,
+                twoWay: twoWay,
+            })
 
-                const responses2 = await Promise.all(airlines.map(fetchFlightData2));
-                dispatch(setAllDataTwo(responses2))
-
-                const allDomesticDatas2 = responses2.flatMap((response) => flattenDomesticDatas(response));
-                allDomesticDatas2.forEach((domesticData) => {
+            if (twoWay) {
+                const allDomesticDatas2 = responses.data.flatMap((response: any) => flattenDomesticDatas(response));
+                allDomesticDatas2.forEach((domesticData: any) => {
                     const airline = domesticData.airline;
                     domesticData.airlineFee = feeValues[airline + 'FEE'] + agent[airline + 'FEE'];
                 });
@@ -347,7 +263,7 @@ function FilteredListPage() {
                 const minFaresByAirlines2: MinFareByAirlines[] = [];
                 const minFaresByCabin2: MinFareByCabin[] = [];
 
-                allDomesticDatas2.forEach(({ fareAdt, listFlight }) => {
+                allDomesticDatas2.forEach(({ fareAdt, listFlight }: any) => {
 
                     listFlight.forEach((segment: { airline: any; }) => {
                         const { airline } = segment;
@@ -379,13 +295,15 @@ function FilteredListPage() {
                 const sortByFareAdtFullAscending2 = allDomesticDatas2.sort((a: any, b: any) => a.fareAdt - b.fareAdt)
                 setPaginatedData2(sortByFareAdtFullAscending2)
                 setFilteredData2(sortByFareAdtFullAscending2)
-                setLoading2(false)
             }
+
+            setLoading(false)
 
         } catch (error) {
             console.error('Error fetching data:', error);
         } finally {
-            setLoading2(false)
+            setLoading(false)
+            setProgress(100);
         }
     };
 
@@ -421,30 +339,31 @@ function FilteredListPage() {
         return () => clearInterval(interval);
     }, [progress, maxProgress]);
 
+    useEffect(() => {
+        fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [departDate, startPoint, endPoint, userLoginInf, adults, children, inf]);
 
     useEffect(() => {
-        fetchData()
+        if(twoWay){
+            fetchDataReturn();
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [departDate, userLoginInf])
+    }, [returnDate, startPoint, endPoint, userLoginInf, adults, children, inf, twoWay]);
 
-    useEffect(() => {
-        fetchData2()
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [returnDate, statusOpenTab2, userLoginInf])
 
     const handleFilterChange = (filterKey: string, checkedValues: string[] | boolean) => {
         setFilters((prevFilters) => ({ ...prevFilters, [filterKey]: checkedValues }));
     };
 
     useEffect(() => {
-        if (tripType === false) {
+        if (twoWay === false) {
             setPageRevert(1)
             setStatusOpenTab2(false)
         } else {
             setStatusOpenTab2(true)
         }
-    }, [tripType])
+    }, [twoWay])
 
     const flightTimesMap = [
         { label: 'Sáng sớm', startTime: '00:00', endTime: '06:00', icon: <img src='/media/flightIcons/sun-rise.svg' alt='sun-rise' /> },
@@ -650,6 +569,7 @@ function FilteredListPage() {
 
             setFilteredData(filteredData);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filters, paginatedData, paginatedData2, tripType, selectedFlight, selectedFlightEnd]);
 
     const handleNumberChange = (number: number) => {
@@ -669,6 +589,8 @@ function FilteredListPage() {
         }
         setPageRevert(Number(value));
     };
+
+    console.log(filteredData2)
 
     return (
         <div className='flex-row-page'>
@@ -1159,7 +1081,6 @@ function FilteredListPage() {
                                                                 {option.cabin}
                                                             </p>
                                                         </div>
-                                                        {/* <p className="filter-item text-truncate">{pageRevert === 1 ? option.MinFareAdtFull.toLocaleString('en-US') : minFareAdtFull2.toLocaleString('en-US')} VNĐ</p> */}
                                                         <p className="filter-item text-truncate">{option.minFareAdtFull.toLocaleString('en-US')} VNĐ</p>
                                                     </div>
                                                 ))
@@ -1167,38 +1088,7 @@ function FilteredListPage() {
                                 </div>
                                 <div className='line-row'>
                                 </div>
-                                {/* <div className='gr-filter'>
-                                <h5 className='filter-title'>Flight Times</h5>
-                                {loading
-                                    ? <Skeleton paragraph={{ rows: 4 }} active />
-                                    : <>
-                                        <div className='gr-flex-col'>
-                                            <div className='flex-col-item'>
-                                                <div className='flex-between'>
-                                                    <p className='title text-truncate' style={{ fontWeight: '600' }}>Take-off</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className='gr-flex-col'>
-                                            <div className='flex-col-item'>
-                                                <div className='flex-between'>
-                                                    <p className='filter-item text-truncate'>01:00</p>
-                                                </div>
-                                                <p className='filter-item text-truncate'>{timeLine}</p>
-                                            </div>
-                                        </div>
-                                        <div className='gr-flex-col'>
-                                            <Slider
-                                                step={30}
-                                                min={60}
-                                                max={1440}
-                                                onChange={onChangeTimeline}
-                                                tooltip={{ formatter: null }}
-                                            />
-                                        </div>
-                                    </>
-                                }
-                            </div> */}
+
                                 <div className='line-row'>
                                 </div>
                                 <div className='gr-filter'>
@@ -1251,7 +1141,7 @@ function FilteredListPage() {
                                                 :
                                                 <p className="content" style={{
                                                     whiteSpace: 'nowrap'
-                                                }}>Tìm thấy {paginatedData.length + paginatedData2.length} chuyến</p>
+                                                }}>Tìm thấy {paginatedData && paginatedData.length + paginatedData2.length} chuyến</p>
                                             }
                                         </div>
                                     </div>
@@ -1310,7 +1200,7 @@ function FilteredListPage() {
                                                             returnDate={returnDate}
                                                             twoWay={String(tripType)} />
                                                     </div>
-                                                    <PaginatedList paginatedData={filteredData} loading={loading} pageRevert={1} onNumberChange={handleNumberChange} />
+                                                    <PaginatedList paginatedData={filteredData ?? []} loading={loading} pageRevert={1} onNumberChange={handleNumberChange} />
                                                 </>,
                                             },
                                             {
@@ -1328,7 +1218,7 @@ function FilteredListPage() {
                                                             returnDate={returnDate}
                                                             twoWay={String(tripType)} />
                                                     </div>
-                                                    <PaginatedList paginatedData={filteredData2} loading={loading2} pageRevert={2} onNumberChange={handleNumberChange} />
+                                                    <PaginatedList paginatedData={filteredData2 ?? []} loading={loading} pageRevert={2} onNumberChange={handleNumberChange} />
                                                 </>,
                                                 disabled: statusOpenTab2 === false,
                                             },

@@ -81,7 +81,7 @@ function SliderDateTrendReturn(props: Iprops) {
             }
         }
         fetchListDate()
-    }, [])
+    }, [EndPoint, StartPoint, returnDate])
 
 
     const updateUrlWithFilters = (value: string) => {
