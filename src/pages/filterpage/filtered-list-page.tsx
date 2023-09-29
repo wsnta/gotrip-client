@@ -231,17 +231,17 @@ function FilteredListPage() {
             const AllListFlight = allDomesticDatas.flatMap((element) => flattenListFlight(element));
             dispatch(setAllListFlight(AllListFlight))
 
-            allDomesticDatas.forEach(({ fullPrice, listFlight }) => {
+            allDomesticDatas.forEach(({ fareAdt, listFlight }) => {
 
                 listFlight.forEach((segment: { airline: any; }) => {
                     const { airline } = segment;
                     let airlineObj = minFaresByAirlines.find((item) => item.airline === airline);
                     if (!airlineObj) {
-                        airlineObj = { airline: airline, minFareAdtFull: fullPrice };
+                        airlineObj = { airline: airline, minFareAdtFull: fareAdt };
                         minFaresByAirlines.push(airlineObj);
                     } else {
-                        if (fullPrice < airlineObj.minFareAdtFull) {
-                            airlineObj.minFareAdtFull = fullPrice;
+                        if (fareAdt < airlineObj.minFareAdtFull) {
+                            airlineObj.minFareAdtFull = fareAdt;
                         }
                     }
                 });
@@ -249,18 +249,18 @@ function FilteredListPage() {
                     const { groupClass } = segment;
                     let cabinObj = minFaresByCabin.find((item) => item.cabin === groupClass);
                     if (!cabinObj) {
-                        cabinObj = { cabin: groupClass, minFareAdtFull: fullPrice };
+                        cabinObj = { cabin: groupClass, minFareAdtFull: fareAdt };
                         minFaresByCabin.push(cabinObj);
                     } else {
-                        if (fullPrice < cabinObj.minFareAdtFull) {
-                            cabinObj.minFareAdtFull = fullPrice;
+                        if (fareAdt < cabinObj.minFareAdtFull) {
+                            cabinObj.minFareAdtFull = fareAdt;
                         }
                     }
                 });
             });
             setMinFaresByAirlines(minFaresByAirlines)
             setMinFaresByCabin(minFaresByCabin)
-            const sortByFareAdtFullAscending = allDomesticDatas.sort((a: any, b: any) => a.fullPrice - b.fullPrice)
+            const sortByFareAdtFullAscending = allDomesticDatas.sort((a: any, b: any) => a.fareAdt - b.fareAdt)
             setPaginatedData(sortByFareAdtFullAscending)
             setFilteredData(sortByFareAdtFullAscending)
             setLoading(false)
@@ -347,17 +347,17 @@ function FilteredListPage() {
                 const minFaresByAirlines2: MinFareByAirlines[] = [];
                 const minFaresByCabin2: MinFareByCabin[] = [];
 
-                allDomesticDatas2.forEach(({ fullPrice, listFlight }) => {
+                allDomesticDatas2.forEach(({ fareAdt, listFlight }) => {
 
                     listFlight.forEach((segment: { airline: any; }) => {
                         const { airline } = segment;
                         let airlineObj = minFaresByAirlines2.find((item) => item.airline === airline);
                         if (!airlineObj) {
-                            airlineObj = { airline: airline, minFareAdtFull: fullPrice };
+                            airlineObj = { airline: airline, minFareAdtFull: fareAdt };
                             minFaresByAirlines2.push(airlineObj);
                         } else {
-                            if (fullPrice < airlineObj.minFareAdtFull) {
-                                airlineObj.minFareAdtFull = fullPrice;
+                            if (fareAdt < airlineObj.minFareAdtFull) {
+                                airlineObj.minFareAdtFull = fareAdt;
                             }
                         }
                     });
@@ -365,18 +365,18 @@ function FilteredListPage() {
                         const { groupClass } = segment;
                         let cabinObj = minFaresByCabin2.find((item) => item.cabin === groupClass);
                         if (!cabinObj) {
-                            cabinObj = { cabin: groupClass, minFareAdtFull: fullPrice };
+                            cabinObj = { cabin: groupClass, minFareAdtFull: fareAdt };
                             minFaresByCabin2.push(cabinObj);
                         } else {
-                            if (fullPrice < cabinObj.minFareAdtFull) {
-                                cabinObj.minFareAdtFull = fullPrice;
+                            if (fareAdt < cabinObj.minFareAdtFull) {
+                                cabinObj.minFareAdtFull = fareAdt;
                             }
                         }
                     });
                 });
                 setMinFaresByAirlines2(minFaresByAirlines2)
                 setMinFaresByCabin2(minFaresByCabin2)
-                const sortByFareAdtFullAscending2 = allDomesticDatas2.sort((a: any, b: any) => a.FareAdtFull - b.FareAdtFull)
+                const sortByFareAdtFullAscending2 = allDomesticDatas2.sort((a: any, b: any) => a.fareAdt - b.fareAdt)
                 setPaginatedData2(sortByFareAdtFullAscending2)
                 setFilteredData2(sortByFareAdtFullAscending2)
                 setLoading2(false)
@@ -392,16 +392,16 @@ function FilteredListPage() {
     const handleSort = () => {
         if (pageRevert === 2) {
             const sortedData = [...filteredData2].sort((a, b) => {
-                if (a.fullPrice < b.fullPrice) return ascending ? 1 : -1;
-                if (a.fullPrice > b.fullPrice) return ascending ? -1 : 1;
+                if (a.fareAdt < b.fareAdt) return ascending ? 1 : -1;
+                if (a.fareAdt > b.fareAdt) return ascending ? -1 : 1;
                 return 0;
             });
             setFilteredData2(sortedData);
             setAscending((prevAscending) => !prevAscending);
         } else {
             const sortedData = [...filteredData].sort((a, b) => {
-                if (a.fullPrice < b.fullPrice) return ascending ? 1 : -1;
-                if (a.fullPrice > b.fullPrice) return ascending ? -1 : 1;
+                if (a.fareAdt < b.fareAdt) return ascending ? 1 : -1;
+                if (a.fareAdt > b.fareAdt) return ascending ? -1 : 1;
                 return 0;
             });
             setFilteredData(sortedData);
@@ -425,13 +425,13 @@ function FilteredListPage() {
     useEffect(() => {
         fetchData()
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [location, userLoginInf])
+    }, [departDate, userLoginInf])
 
     useEffect(() => {
         fetchData2()
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [location, statusOpenTab2, userLoginInf])
+    }, [returnDate, statusOpenTab2, userLoginInf])
 
     const handleFilterChange = (filterKey: string, checkedValues: string[] | boolean) => {
         setFilters((prevFilters) => ({ ...prevFilters, [filterKey]: checkedValues }));
@@ -687,7 +687,7 @@ function FilteredListPage() {
                         <div className='container-filter'>
                             <div className='frame-filter-flex'>
                                 <div className='list-gr-filter' style={{ display: 'flex', flexDirection: 'column' }}>
-                                <div className='gr-filter' style={{ maxHeight: 'none' }}>
+                                    <div className='gr-filter' style={{ maxHeight: 'none' }}>
                                         <h5 className='filter-title'>Flight Times</h5>
                                         <div className='gr-flex-col'>
                                             <div className='flex-col-item'>
@@ -939,7 +939,7 @@ function FilteredListPage() {
                         {tripType === true && <MiniBooking />}
                         <div className='frame-filter-flex'>
                             <div className='list-gr-filter visible'>
-                            <div className='gr-filter' style={{ maxHeight: 'none' }}>
+                                <div className='gr-filter' style={{ maxHeight: 'none' }}>
                                     <h5 className='filter-title'>Flight Times</h5>
                                     <div className='gr-flex-col'>
                                         <div className='flex-col-item'>
@@ -1301,7 +1301,15 @@ function FilteredListPage() {
                                                 key: '1',
                                                 children: <>
                                                     <div className='slider-top-filter'>
-                                                        <SliderDateTrend />
+                                                        <SliderDateTrend
+                                                            DepartDate={departDate}
+                                                            EndPoint={endPoint}
+                                                            StartPoint={startPoint}
+                                                            Inf={inf}
+                                                            adults={adults}
+                                                            children={children}
+                                                            returnDate={returnDate}
+                                                            twoWay={String(tripType)} />
                                                     </div>
                                                     <PaginatedList paginatedData={filteredData} loading={loading} pageRevert={1} onNumberChange={handleNumberChange} />
                                                 </>,
@@ -1311,7 +1319,15 @@ function FilteredListPage() {
                                                 key: '2',
                                                 children: <>
                                                     <div className='slider-top-filter'>
-                                                        <SliderDateTrendReturn />
+                                                        <SliderDateTrendReturn
+                                                            DepartDate={departDate}
+                                                            EndPoint={endPoint}
+                                                            StartPoint={startPoint}
+                                                            Inf={inf}
+                                                            adults={adults}
+                                                            children={children}
+                                                            returnDate={returnDate}
+                                                            twoWay={String(tripType)} />
                                                     </div>
                                                     <PaginatedList paginatedData={filteredData2} loading={loading2} pageRevert={2} onNumberChange={handleNumberChange} />
                                                 </>,
@@ -1321,7 +1337,15 @@ function FilteredListPage() {
                                     />
                                     : <>
                                         <div className='slider-top-filter'>
-                                            <SliderDateTrend />
+                                            <SliderDateTrend
+                                                DepartDate={departDate}
+                                                EndPoint={endPoint}
+                                                StartPoint={startPoint}
+                                                Inf={inf}
+                                                adults={adults}
+                                                children={children}
+                                                returnDate={returnDate}
+                                                twoWay={String(tripType)} />
                                         </div>
                                         <PaginatedList paginatedData={filteredData} loading={loading} pageRevert={1} onNumberChange={handleNumberChange} />
                                     </>
@@ -1329,7 +1353,7 @@ function FilteredListPage() {
                             </div>
                         </div>
                     </div>
-                    <Footer/>
+                    <Footer />
                 </section>
             </div>
         </div>
