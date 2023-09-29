@@ -186,7 +186,7 @@ const PaginatedList = (props: IProps) => {
         setConditions(response.data.bookingRules ?? [])
         setIsLoadingCdt(false)
       } catch (error) {
-        console.log(error)
+        console.error(error)
       } finally {
         setIsLoadingCdt(false)
       }
@@ -386,7 +386,6 @@ const PaginatedList = (props: IProps) => {
       +
       ((cur.feeInf + cur.taxInf + cur.serviceFeeInf) * cur.inf)
       + cur.airlineFee), 0)
-
 
   const handleResize = useCallback(() => {
     const winWidth = window.innerWidth
@@ -635,7 +634,7 @@ const PaginatedList = (props: IProps) => {
 
                     </div>
                     <div className='item-col-1'>
-                      <h3 className='text-18 text-truncate open'>{formatNumber((element.fareAdt + element.taxAdt + element.feeAdt + element.serviceFeeAdt + element.airlineFee) - discountUser)} {element.Currency ?? 'VNĐ'}</h3>
+                      <h3 className='text-18 text-truncate open'>{formatNumber(element.fareAdt - discountUser)} {element.Currency ?? 'VNĐ'}</h3>
                       {/* <p className="filter-item text-truncate">16 deals</p> */}
                       {windowWidth > 624 ? tripType === true
                         ? <button className={'view-deal'} onClick={() => addNewItem({ ...element, key: pageRevert })}>

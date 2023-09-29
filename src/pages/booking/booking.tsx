@@ -285,14 +285,13 @@ function Booking() {
                         localStorage.setItem('bookingFn', JSON.stringify(newData))
                         history(`/booking-detail/${bookingId}`);
                     } catch (error) {
-                        console.log(error);
+                        console.error(error);
                     }
                     setBookingLoading(false);
                     // socket.emit('check-user', { accountType: '', idBooking: `BK${newData.id}`, amout: '2' });
 
                 }
             } catch (error) {
-                console.log(error);
                 if (retryCount < maxRetries) {
                     setRetryCount(retryCount + 1);
                 }
@@ -321,7 +320,6 @@ function Booking() {
             && ((dataBooking.length > 0 && dataBooking[0].chd > 0) ? checkField(formDataInfChid, ["contentChid", "fullnameChid", "date"]) : true)
             && ((dataBooking.length > 0 && dataBooking[0].inf > 0) ? checkField(formDataInfBaby, ["contentBaby", "fullnameBaby", "dateBaby"]) : true)
         ) {
-            console.log('goi')
             setBookingLoading(true)
             const AuthorizationCode = await getCode();
             const formattedDate = dayjs().format('YYYY-MM-DDTHH:mm:ss.SSS');
@@ -445,7 +443,7 @@ function Booking() {
                     setTranId(tranId);
                 }
             } catch (error) {
-                console.log(error)
+                console.error(error)
             } finally {
                 localStorage.removeItem('countdownEndTime')
             }
@@ -529,7 +527,7 @@ function Booking() {
 
                 return response.data.listBaggage;
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 return [];
             }
         };
@@ -554,7 +552,7 @@ function Booking() {
                     }
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.error(error);
                 });
         }
     }, []);

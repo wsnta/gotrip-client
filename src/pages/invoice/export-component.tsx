@@ -23,7 +23,6 @@ const ExportComponent = () => {
                 setLoadingTicket(true)
                 const res = await axios.get(`${serverHostIO}/api/get-booking-detail/${bookingId}`)
                 setInvoice(res.data)
-                console.log(res.data, 'sss')
 
                 if (res.data.listFareData && Array.isArray(res.data.listFareData)) {
                     const total = res.data.listFareData.reduce((num: number, cur: any) =>
@@ -36,14 +35,13 @@ const ExportComponent = () => {
                             + cur.airlineFee
                         )
                         , 0)
-                    console.log('total', total)
                     setTotal(total)
                 }
 
                 setLoadingTicket(false)
             } catch (error) {
                 setInvoice({})
-                console.log(error)
+                console.error(error)
             } finally {
                 setLoadingTicket(false)
             }

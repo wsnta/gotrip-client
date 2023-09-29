@@ -34,7 +34,6 @@ export const actionSuccessReporter = (config: ActionSuccessReportConfig) => {
             notification['warning'](notificationProps);
             break;
         default:
-            console.log(`Success Reporter: ${reportMessage} \n${description ?? ''}`);
             break;
     }
 };

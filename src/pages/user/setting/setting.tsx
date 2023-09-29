@@ -46,7 +46,7 @@ const Setting = () => {
                         const res = await axios.get(`${serverHostIO}/api/all-agent`)
                         setListAgent(res.data)
                     } catch (error) {
-                        console.log(error)
+                        console.error(error)
                     }
                 }
             };
@@ -77,7 +77,7 @@ const Setting = () => {
       }, [selectedAgentID, listAgent]);
     
     const onChange = (key: string) => {
-        console.log(key);
+        // console.log(key);
     };
     
     const openNotification = (placement: NotificationPlacement, value: string) => {
@@ -103,7 +103,7 @@ const Setting = () => {
                 setLoading(false)
                 openNotification('topLeft', 'Thành công')
             } catch (error) {
-                console.log(error)
+                console.error(error)
                 openNotification('topLeft', 'Thất bại')
             } finally {
                 setLoading(false)
@@ -123,7 +123,7 @@ const Setting = () => {
                 setLoading(false)
                 openNotification('topLeft', 'Thành công')
             } catch (error) {
-                console.log(error)
+                console.error(error)
                 openNotification('topLeft', 'Thất bại')
             } finally {
                 setLoading(false)
@@ -146,7 +146,7 @@ const Setting = () => {
                 setLoading(false)
                 openNotification('topLeft', res.data.message)
             } catch (error) {
-                console.log(error)
+                console.error(error)
                 openNotification('topLeft', 'Thất bại')
             } finally {
                 setLoading(false)
@@ -163,13 +163,11 @@ const Setting = () => {
                     headers: {
                         Authorization: `${userLoginInf.accessToken}`,
                     },
-                }).then((value) => console.log(value))
-                console.log('Thanh cong')
+                })
                 openNotification('topLeft', 'Thành công')
                 setLoading(false)
             } catch (error) {
                 openNotification('topLeft', 'Thất bại')
-                console.log(error)
             } finally {
                 setLoading(false)
             }
@@ -189,7 +187,7 @@ const Setting = () => {
                 setLoading(false)
             } catch (error) {
                 openNotification('topLeft', 'Thất bại')
-                console.log(error)
+                console.error(error)
             } finally {
                 setLoading(false)
             }
@@ -197,7 +195,7 @@ const Setting = () => {
     };
 
     const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
+        // console.log('Failed:', errorInfo);
     };
 
     useEffect(() => {
@@ -207,7 +205,7 @@ const Setting = () => {
                     const banks = await axios.get('https://api.vietqr.io/v2/banks')
                     setListBank(banks.data.data)
                 } catch (error) {
-                    console.log(error)
+                    console.error(error)
                 }
             }
             fetchListBank()
@@ -544,7 +542,7 @@ const Setting = () => {
                 setQRURL(res.data.data.qrDataURL)
                 setLoadingQr(false)
             } catch (error) {
-                console.log(error)
+                console.error(error)
             } finally {
                 setLoadingQr(false)
             }

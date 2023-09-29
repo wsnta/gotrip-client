@@ -130,7 +130,7 @@ const BookingDetail = () => {
                     setLoadingTicket(false)
                     setTicketInfMap(updateList)
                 } catch (error) {
-                    console.log(error)
+                    console.error(error)
                 } finally {
                     setLoadingTicket(false)
                 }
@@ -161,7 +161,7 @@ const BookingDetail = () => {
                     const banks = await axios.get('https://api.vietqr.io/v2/banks')
                     setListBank(banks.data.data)
                 } catch (error) {
-                    console.log(error)
+                    console.error(error)
                 }
             }
             fetchListBank()
@@ -186,7 +186,7 @@ const BookingDetail = () => {
                 setQRURL(res.data.data.qrDataURL);
                 setLoadingQr(false);
             } catch (error) {
-                console.log(error);
+                console.error(error);
             } finally {
                 setLoadingQr(false);
             }

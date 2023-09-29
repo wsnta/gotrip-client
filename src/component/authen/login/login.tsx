@@ -35,7 +35,7 @@ const Login = () => {
     const [loading, setLoading] = useState(false)
 
     const handleResponse = (response: any) => {
-        console.log(response);
+        // console.log(response);
         // Xử lý response từ Facebook ở đây
     };
 
@@ -133,7 +133,6 @@ const Login = () => {
                 }
             }
         } catch (error: any) {
-            console.log(error)
             openNotification('topLeft', 'Đăng nhập thất bại')
         } finally {
             setLoading(false)
@@ -173,7 +172,6 @@ const Login = () => {
                 }
             }
         } catch (error: any) {
-            console.log(error)
             openNotification('topLeft', 'Đăng nhập thất bại')
         } finally {
             setLoading(false)
@@ -240,7 +238,7 @@ const Login = () => {
                         appId={serverKeyF}
                         onResolve={(response) => loginWithFacebook(response)}
                         onReject={(response) => {
-                            console.log(response)
+                           
                         }}
                     >
                         <MyFacebookLoginButton className="auth-orther face" />
@@ -253,7 +251,7 @@ const Login = () => {
                                 loginWithGoogle(credentialResponse)
                             }}
                             onError={() => {
-                                console.log('Login Failed');
+                               
                             }}
                         />
                     </GoogleOAuthProvider>

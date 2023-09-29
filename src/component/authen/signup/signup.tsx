@@ -106,16 +106,12 @@ const Signup = () => {
                         email: email,
                     }))
                     localStorage.setItem('refreshToken', refreshToken);
-                    // history('/');
-                    console.log('Đăng nhập thành công');
                     setLoading(false)
                     dispatch(setOpenModalAuth(false))
-                } else {
-                    console.log('Đăng nhập thất bại');
                 }
             }
         } catch (error: any) {
-            console.log(error)
+            console.error(error)
         } finally {
             setLoading(false)
         }
@@ -146,15 +142,12 @@ const Signup = () => {
                         email: email,
                     }))
                     localStorage.setItem('refreshToken', refreshToken);
-                    console.log('Đăng nhập thành công');
                     setLoading(false)
                     dispatch(setOpenModalAuth(false))
-                } else {
-                    console.log('Đăng nhập thất bại');
                 }
             }
         } catch (error: any) {
-            console.log(error)
+            console.error(error)
         } finally {
             setLoading(false)
         }
@@ -261,23 +254,11 @@ const Signup = () => {
                         appId="791026089420202"
                         onResolve={(response) => loginWithFacebook(response)}
                         onReject={(response) => {
-                            console.log(response)
+                            
                         }}
                     >
                         <MyFacebookLoginButton className="auth-orther face" />
                     </LoginSocialFacebook>
-                    {/* <GoogleOAuthProvider
-                        clientId="294455391531-s0a054m3lv4s6rs7m0vdnopbu8r080ut.apps.googleusercontent.com">
-                        <div className="flex-button-log">
-
-                        <button className="auth-orther gg" onClick={() => login()}>
-                            <BiLogoGoogle /> Google
-                        </button>
-                        </div>
-                    </GoogleOAuthProvider>
-                        <button className="auth-orther gg" onClick={() => login()}>
-                            <BiLogoGoogle /> Google
-                        </button> */}
                     <GoogleOAuthProvider
                         clientId="294455391531-s0a054m3lv4s6rs7m0vdnopbu8r080ut.apps.googleusercontent.com">
                         <GoogleLogin
@@ -286,7 +267,7 @@ const Signup = () => {
                                 loginWithGoogle(credentialResponse)
                             }}
                             onError={() => {
-                                console.log('Login Failed');
+                                
                             }}
                         />
                     </GoogleOAuthProvider>

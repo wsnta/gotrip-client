@@ -92,7 +92,7 @@ const ThanksYou = () => {
                     setLoadingTicket(false)
                     setTicketInfMap(updateList)
                 } catch (error) {
-                    console.log(error)
+                    console.error(error)
                 } finally {
                     setLoadingTicket(false)
                 }
@@ -110,7 +110,6 @@ const ThanksYou = () => {
             setLoadingQr(true)
             try {
                 const existingValue = userInf ? amoutValue(userInf.accountType, userInf.rank, amount) : amount
-                console.log(existingValue)
                 const data = {
                     "accountNo": 19027635064028,
                     "accountName": "HUYNH PHUOC MAN",
@@ -124,7 +123,7 @@ const ThanksYou = () => {
                 setQRURL(res.data.data.qrDataURL)
                 setLoadingQr(false)
             } catch (error) {
-                console.log(error)
+                console.error(error)
             } finally {
                 setLoadingQr(false)
             }

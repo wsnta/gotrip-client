@@ -115,7 +115,6 @@ function Home() {
         if (defaultValueStr) {
             try {
                 const defaultValue = JSON.parse(defaultValueStr);
-                // console.log(defaultValue.departDate)
                 setOnchangeValueDepart(defaultValue.startPoint);
                 setOnchangeValueToReturn(defaultValue.endPoint);
                 setAdults(Number(defaultValue.adults));

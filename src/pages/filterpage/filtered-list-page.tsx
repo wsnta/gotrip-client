@@ -515,7 +515,6 @@ function FilteredListPage() {
     useEffect(() => {
         const { startTime: minStartTime, endTime: maxEndTime } = getMinMaxTimes(selectedFlight);
         const { startTime: minStartTimeEnd, endTime: maxEndTimeEnd } = getMinMaxTimes(selectedFlightEnd);
-        // console.log('minStartTime', minStartTime, formatTimeByDate("2023-08-02T22:25:00Z"))
         if (tripType) {
             const filteredData = paginatedData.filter((item) => {
                 const isAirlineMatch = filters.airline.length === 0 || item.listFlight.some((segment: any) => filters.airline.includes(segment.airline));

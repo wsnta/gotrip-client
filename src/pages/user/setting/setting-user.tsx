@@ -40,7 +40,7 @@ const SettingUser = () => {
                 setLoading(false)
                 openNotification('topLeft', res.data.message)
             } catch (error) {
-                console.log(error)
+                console.error(error)
                 openNotification('topLeft', 'Thất bại')
             } finally {
                 setLoading(false)
@@ -49,7 +49,7 @@ const SettingUser = () => {
     };
 
     const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
+        // console.log('Failed:', errorInfo);
     };
 
     return (

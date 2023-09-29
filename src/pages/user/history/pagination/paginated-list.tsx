@@ -40,8 +40,6 @@ const PaginatedList = (props: IProps) => {
   const [tranId, setTranId] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState<number>(0);
   const maxRetries = 4;
-
-  console.log(paginatedData)
   useEffect(() => {
     fetch('https://api64.ipify.org?format=json')
       .then(response => response.json())
@@ -135,7 +133,7 @@ const PaginatedList = (props: IProps) => {
         setTranId(tranId);
       }
     } catch (error) {
-      console.log(error)
+      console.error(error)
     } finally {
       localStorage.removeItem('countdownEndTime')
     }
@@ -219,14 +217,14 @@ const PaginatedList = (props: IProps) => {
             await removeBooking(selectedItem?._id)
             history(`/booking-detail/${bookingId}`);
           } catch (error) {
-            console.log(error);
+            console.error(error);
           }
           setBookingLoading(false);
           // socket.emit('check-user', { accountType: '', idBooking: `BK${newData.id}`, amout: '2' });
 
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
         if (retryCount < maxRetries) {
           setRetryCount(retryCount + 1);
         }

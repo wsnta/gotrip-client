@@ -61,8 +61,6 @@ const Countdown = () => {
 
   const existingValue = remainingTime
 
-  console.log('existingValue', existingValue)
-
   return (
     <span>
       {existingValue <= 0 ? (

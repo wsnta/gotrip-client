@@ -66,64 +66,13 @@ function SliderDateTrendReturn(props: Iprops) {
     const [listTrends, setListTrends] = useState<ListPriceType[]>([])
     const [isLoading, setIsLoading] = useState(false)
 
-    const fetchFlightData = async (item: any, headers: any) => {
-        return (await axios.post("http://plugin.datacom.vn/flightmonth", item, {
-            headers: headers
-        })).data;
-    };
-
     useEffect(() => {
         const fetchListDate = async () => {
-            const dateObject = dayjs(returnDate, "DDMMYYYY");
-
-            const targetMonth = dateObject.format("MM");
-            const targetYear = dateObject.format("YYYY");
-
-            const data = [];
-
-            let month = targetMonth.padStart(2, '0');
-            let year = Number(targetYear);
-
-            for (let i = 0; i < 2; i++) {
-                const productKey = "r1e0q6z8md6akul";
-                const monthValue = month;
-                const yearValue = year;
-                data.push({
-                    ProductKey: productKey,
-                    StartPoint: EndPoint,
-                    EndPoint: StartPoint,
-                    Month: monthValue,
-                    Year: yearValue,
-                });
-
-                if (month === "12") {
-                    month = "01";
-                    year++;
-                } else {
-                    month = (parseInt(month) + 1).toString().padStart(2, '0');
-                }
-            }
-
-            const headers = {
-                // "Accept": "*/*",
-                // "Accept-Encoding": "gzip, deflate",
-                // "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
-                // "Connection": "keep-alive",
-                // "Content-Length": JSON.stringify(data).length,
-                // "Content-Type": "application/json; charset=UTF-8",
-                // "Host": "plugin.datacom.vn",
-                // "Origin": "http://wpv08.webphongve.vn",
-                // "Referer": "http://wpv08.webphongve.vn/",
-                // "User-Agent": navigator.userAgent,
-            };
 
             try{
                 setIsLoading(true)
-                const responses = await Promise.all(data.map((item: any) => fetchFlightData(item, headers)));
-                const mergedListFare = responses.reduce((accumulator, currentObject) => {
-                    return accumulator.concat(currentObject.ListFare);
-                }, []);
-                setListTrends(mergedListFare)
+                const responses = await axios.get(`${serverHostIO}/api/list-price?startPoint=${EndPoint}&endPoint=${StartPoint}&departDate=${returnDate}`);
+                setListTrends(responses.data)
                 setIsLoading(false)
             }catch(error){
                 console.error(error)
