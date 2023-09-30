@@ -392,11 +392,11 @@ const ThanksYou = () => {
                         </div>}
                     <h3 className="title-info">Thông tin thanh toán.</h3>
                     <div className="qr-item">
-                        <img id="scroll-payment" src={QRURL} className="image-qr" alt="" />
+                        <img id="scroll-payment" src={QRURL} className="image-qr" alt="thanh toán" />
                         <div className="qr-inf">
-                            <img className="img-qr naspas" src='media/logo/napas.png' alt="" />
+                            <img className="img-qr naspas" src='media/logo/napas.png' alt="dịch vụ" />
                             <div className="qr-line"></div>
-                            <img className="img-qr" src='media/logo/Logo-TCB-H.webp' alt="" />
+                            <img className="img-qr" src='media/logo/Logo-TCB-H.webp' alt="du lịch" />
                         </div>
                         <h3 className="title-info text-14" style={{ margin: '0', fontWeight: '400' }}>HUYNH PHUOC MAN</h3>
                         <h3 className="title-info text-14" style={{ margin: '0', fontWeight: '400' }}>19027635064028</h3>

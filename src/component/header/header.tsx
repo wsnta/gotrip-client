@@ -175,7 +175,7 @@ export default function Header() {
                 {contextHolder}
                 {/* <button onClick={fetchCapcha}>Captcha</button> */}
                 <a className="header__layout-brand" href="/home">
-                    <img className="header__layout-logo" src="/media/general/logo-light.svg" alt='' />
+                    <img className="header__layout-logo" src="/media/general/logo-light.svg" alt='Logo máy bay' />
                 </a>
                 {isLoading && <LoadingSpinner />}
                 <Modal footer={null} open={openModalAuth} onCancel={() => dispatch(setOpenModalAuth(false))}>

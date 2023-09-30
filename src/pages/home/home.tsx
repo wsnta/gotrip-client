@@ -258,7 +258,7 @@ function Home() {
             <div className='page-main'>
                 <section data-anim-wrap className='poster-home'>
                     <div data-anim-child="fade" className='frame-poster'>
-                        <img src="media/masthead/1/img_bg_home.jpg" alt="image" className="poster-img" />
+                        <img src="media/masthead/1/img_bg_home.jpg" alt="du lịch" className="poster-img" />
                     </div>
 
                     <div className='container-poster'>

@@ -253,7 +253,7 @@ const UserDashboard = () => {
                                 <p className="content-dsc">Số chuyến bay chưa thanh toán</p>
                             </div>
                             <div className="booking-item-chd">
-                                <img src="media/dashboard/icons/1.svg" alt="" />
+                                <img src="media/dashboard/icons/1.svg" alt="Chuyến bay" />
                             </div>
                         </div>
                         <div className="booking-item">
@@ -267,7 +267,7 @@ const UserDashboard = () => {
                                 <p className="content-dsc">Số chuyến bay đã thanh toán</p>
                             </div>
                             <div className="booking-item-chd">
-                                <img src="media/dashboard/icons/2.svg" alt="" />
+                                <img src="media/dashboard/icons/2.svg" alt="Booking" />
                             </div>
                         </div>
                         <div className="booking-item">
@@ -281,7 +281,7 @@ const UserDashboard = () => {
                                 <p className="content-dsc">Số chuyến bay đã đặt</p>
                             </div>
                             <div className="booking-item-chd">
-                                <img src="media/dashboard/icons/3.svg" alt="" />
+                                <img src="media/dashboard/icons/3.svg" alt="Booking" />
                             </div>
                         </div>
                         <div className="booking-item">
@@ -295,7 +295,7 @@ const UserDashboard = () => {
                                 <p className="content-dsc">Cấp bậc của bạn hiện tại</p>
                             </div>
                             <div className="booking-item-chd">
-                                <img src="media/dashboard/icons/4.svg" alt="" />
+                                <img src="media/dashboard/icons/4.svg" alt="Booking" />
                             </div>
                         </div>
                     </div>

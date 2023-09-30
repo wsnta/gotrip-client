@@ -260,9 +260,9 @@ const BookingDetail = () => {
                                     <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                                 </div>}
                             <div className="qr-item">
-                                <img id="scroll-payment-detail" src={QRURL} className="image-qr" alt="" />
+                                <img id="scroll-payment-detail" src={QRURL} className="image-qr" alt="qr" />
                                 <div className="qr-inf" style={{ gap: '0' }}>
-                                    <img className="img-qr" src={listBank?.find((element) => element.id === selectOption)?.logo} alt="" />
+                                    <img className="img-qr" src={listBank?.find((element) => element.id === selectOption)?.logo} alt="qr" />
                                 </div>
                                 <h3 className="title-info" style={{ margin: '0', fontWeight: '400' }}>{accountName}</h3>
                                 <h3 className="title-info" style={{ margin: '0', fontWeight: '400' }}>{accountNo}</h3>

@@ -636,11 +636,11 @@ const Setting = () => {
                             </div>}
                         {/* <h3 className="title-info">Thông tin thanh toán.</h3> */}
                         <div className="qr-item" style={{ marginTop: '1rem' }}>
-                            <img id="scroll-payment" src={QRURL} className="image-qr" alt="" />
+                            <img id="scroll-payment" src={QRURL} className="image-qr" alt="qr" />
                             <div className="qr-inf">
-                                <img className="img-qr naspas" src='media/logo/napas.png' alt="" />
+                                <img className="img-qr naspas" src='media/logo/napas.png' alt="qr" />
                                 <div className="qr-line"></div>
-                                <img className="img-qr" src='media/logo/mb-logo.png' alt="" />
+                                <img className="img-qr" src='media/logo/mb-logo.png' alt="qr" />
                             </div>
                             <h3 className="title-info" style={{ margin: '0', fontWeight: '400' }}>HUYNH PHUOC MAN</h3>
                             <h3 className="title-info" style={{ margin: '0', fontWeight: '400' }}>0984227777</h3>

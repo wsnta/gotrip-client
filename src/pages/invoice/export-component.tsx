@@ -55,7 +55,7 @@ const ExportComponent = () => {
         <div className="invoice-detail" >
             <div className="invoice-header flex-wap">
                 <a className="header__layout-brand" href="/home">
-                    <img src="/media/general/logo-dark.svg" alt='' />
+                    <img src="/media/general/logo-dark.svg" alt='tour' />
                 </a>
                 <div className="flex-row">
                     <h1 className="text-16">Hóa đơn</h1>

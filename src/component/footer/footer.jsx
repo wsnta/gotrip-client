@@ -11,7 +11,7 @@ export default function Footer() {
             <div className='footer-frame-inner'>
                 <div className='footer-content-item'>
                     <div className='footer-item'>
-                        <img src='/media/general/logo-dark.svg' alt='' />
+                        <img src='/media/general/logo-dark.svg' alt='Logo máy bay' />
                     </div>
                     <div className='footer-item gap-12 flex-wrap'>
                         <div className='flex-col'>

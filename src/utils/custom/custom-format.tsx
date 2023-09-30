@@ -14,15 +14,15 @@ dayjs.extend(customParseFormat);
 export const getAirlineLogo = (abbr: string, style: string, fill?: string) => {
     switch (abbr) {
         case 'VJ':
-            return <img style={{ width: style }} className='paginated-item-img' src='/media/logo/VJ.svg' alt='vj' />;
+            return <img style={{ width: style }} className='paginated-item-img' src='/media/logo/VJ.svg' alt='Vietjet' />;
         case 'VN':
-            return <img style={{ width: style }} className='paginated-item-img' src='/media/logo/VN.svg' alt='vn' />;
+            return <img style={{ width: style }} className='paginated-item-img' src='/media/logo/VN.svg' alt='Vietnam Airlines' />;
         case 'QH':
-            return <img style={{ width: style }} className='paginated-item-img' src='/media/logo/QH.svg' alt='qh' />;
+            return <img style={{ width: style }} className='paginated-item-img' src='/media/logo/QH.svg' alt='Bamboo Airways' />;
         case 'VU':
-            return <img style={{ width: style }} className='paginated-item-img' src='/media/logo/vietravel.png' alt='vu' />;
+            return <img style={{ width: style }} className='paginated-item-img' src='/media/logo/vietravel.png' alt='Vietravel Airlines' />;
         case 'BL':
-            return <img style={{ width: style }} className='paginated-item-img' src='/media/logo/BL.svg' alt='bl' />;
+            return <img style={{ width: style }} className='paginated-item-img' src='/media/logo/BL.svg' alt='Pacific Airlines' />;
         default:
             return <img style={{ width: style }} className='paginated-item-img' alt={abbr} />;
     }

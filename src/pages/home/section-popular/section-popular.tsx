@@ -75,11 +75,11 @@ function SectionPopular() {
             <div className='container-section'>
                 <div className='top-lay-page'>
                     <div className='title-page-section'>
-                        <h2 className='section-title__title'>Popular Destinations</h2>
-                        <p className=" section-title__text">These popular destinations have a lot to offer</p>
+                        <h1 className='section-title__title'>Điểm đến phổ biến</h1>
+                        <p className=" section-title__text">Những điểm đến phổ biến này có rất nhiều điều thú vị</p>
                     </div>
                     <button className='view-button'>
-                        View All Destinations
+                        Xem tất cả
                         <GoArrowUpRight />
                     </button>
                 </div>
@@ -91,7 +91,7 @@ function SectionPopular() {
                                     <div className='mcard-inner'>
                                         <div className='frame-img-card'>
                                             <div className='img-ab'>
-                                                <img src='media/tour/tour1.jpg' />
+                                                <img src='media/tour/tour1.jpg' alt='tour' />
                                             </div>
                                         </div>
                                         <h3 className="title-tour">Weekend itinerary in Sapa - 2 days 1 night</h3>
