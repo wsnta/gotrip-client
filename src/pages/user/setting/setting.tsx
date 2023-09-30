@@ -446,7 +446,7 @@ const Setting = () => {
                             showSearch
                             optionFilterProp="children"
                             filterOption={filterOptionBank}
-                            onSelect={(data) => console.log(data)}
+                            onSelect={() => {}}
                             style={{ width: '100%' }}
                             onChange={(value) => setSelectedAgentID(value)}
                             options={listAgent.map((element: any) => {

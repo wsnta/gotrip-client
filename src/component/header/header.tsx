@@ -167,8 +167,6 @@ export default function Header() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updateBalance])
 
-    console.log('openModalAuth', openModalAuth)
-
     return (
         <div id="header">
             <div className="header__layout">

@@ -590,8 +590,6 @@ function FilteredListPage() {
         setPageRevert(Number(value));
     };
 
-    console.log(filteredData2)
-
     return (
         <div className='flex-row-page'>
             {/* <Sidebar/> */}
