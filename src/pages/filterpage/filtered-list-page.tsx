@@ -99,43 +99,6 @@ function FilteredListPage() {
     const [selectedFlight, setSelectedFlight] = useState<FlightTime[]>([]);
     const [selectedFlightEnd, setSelectedFlightEnd] = useState<FlightTime[]>([]);
 
-    useEffect(() => {
-        if (flashingTab) {
-            const timeout = setTimeout(() => {
-                setFlashingTab('');
-            }, 3000);
-
-            return () => clearTimeout(timeout);
-        }
-    }, [flashingTab]);
-
-
-    const flattenDomesticDatas = (response: any) => {
-        const returnLocation = (code: string) => {
-            if (code) {
-                const cityName = dataCountry.find((element: any) => element.code === code)?.city;
-                return {
-                    airportId: code,
-                    cityId: code,
-                    cityName: cityName,
-                    name: cityName,
-                    tag: "",
-                };
-            }
-        };
-
-        if (response.listFareData && Array.isArray(response.listFareData)) {
-            const updatedListFareData = response.listFareData.map((item: any) => ({
-                ...item,
-                session: response.session,
-                from: returnLocation(item.listFlight[0].startPoint),
-                to: returnLocation(item.listFlight[0].endPoint),
-            }));
-            return updatedListFareData;
-        }
-        return [];
-    };
-
     const fetchData = async () => {
 
         const convert = dataCountry.find((element) => element.code === endPoint)?.city ?? ''
@@ -307,6 +270,55 @@ function FilteredListPage() {
         }
     };
 
+    useEffect(() => {
+        fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [departDate, startPoint, endPoint, userLoginInf, adults, children, inf]);
+
+    useEffect(() => {
+        if(twoWay){
+            fetchDataReturn();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [returnDate, startPoint, endPoint, userLoginInf, adults, children, inf, twoWay]);
+
+    useEffect(() => {
+        if (flashingTab) {
+            const timeout = setTimeout(() => {
+                setFlashingTab('');
+            }, 3000);
+
+            return () => clearTimeout(timeout);
+        }
+    }, [flashingTab]);
+
+
+    const flattenDomesticDatas = (response: any) => {
+        const returnLocation = (code: string) => {
+            if (code) {
+                const cityName = dataCountry.find((element: any) => element.code === code)?.city;
+                return {
+                    airportId: code,
+                    cityId: code,
+                    cityName: cityName,
+                    name: cityName,
+                    tag: "",
+                };
+            }
+        };
+
+        if (response.listFareData && Array.isArray(response.listFareData)) {
+            const updatedListFareData = response.listFareData.map((item: any) => ({
+                ...item,
+                session: response.session,
+                from: returnLocation(item.listFlight[0].startPoint),
+                to: returnLocation(item.listFlight[0].endPoint),
+            }));
+            return updatedListFareData;
+        }
+        return [];
+    };
+
     const handleSort = () => {
         if (pageRevert === 2) {
             const sortedData = [...filteredData2].sort((a, b) => {
@@ -338,19 +350,6 @@ function FilteredListPage() {
 
         return () => clearInterval(interval);
     }, [progress, maxProgress]);
-
-    useEffect(() => {
-        fetchData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [departDate, startPoint, endPoint, userLoginInf, adults, children, inf]);
-
-    useEffect(() => {
-        if(twoWay){
-            fetchDataReturn();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [returnDate, startPoint, endPoint, userLoginInf, adults, children, inf, twoWay]);
-
 
     const handleFilterChange = (filterKey: string, checkedValues: string[] | boolean) => {
         setFilters((prevFilters) => ({ ...prevFilters, [filterKey]: checkedValues }));

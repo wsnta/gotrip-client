@@ -33,7 +33,6 @@ interface Baggage {
 }
 
 function Booking() {
-    const socket = io(serverHostIO);
     const countryCodes = ['+84', '+1', '+44', '+86', '+81'];
     const content = ['Ông', 'Bà'];
     const contentChid = ['Trẻ em trai', 'Trẻ em gái'];
@@ -302,7 +301,7 @@ function Booking() {
             const timer = setTimeout(retryPostReview, 5000);
             return () => clearTimeout(timer);
         }
-    }, [tranId, retryCount, userLoginInf, history, dataBooking, socket, userInf]);
+    }, [tranId, retryCount, userLoginInf, history, dataBooking]);
 
 
     const handleSubmitInf = async () => {

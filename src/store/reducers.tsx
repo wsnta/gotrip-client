@@ -43,6 +43,8 @@ export interface BookingType {
     openModalAuth: boolean,
     sizeQuery: number,
     reload: boolean,
+    updateBalance: boolean,
+    updatePayment: boolean,
 }
 
 const initialState: BookingType = {
@@ -64,7 +66,9 @@ const initialState: BookingType = {
     openSignup: false,
     openModalAuth: false,
     sizeQuery: 1,
-    reload: false
+    reload: false,
+    updateBalance: false,
+    updatePayment: false
 }
 
 const bookingSlice = createSlice({
@@ -128,6 +132,12 @@ const bookingSlice = createSlice({
         setReload:  (state, action: PayloadAction<boolean>) => {
             state.reload = action.payload
         },
+        setUpdatePayment:  (state, action: PayloadAction<boolean>) => {
+            state.updatePayment = action.payload
+        },
+        setUpdateBalance:  (state, action: PayloadAction<boolean>) => {
+            state.updateBalance = action.payload
+        },
     }
 })
 
@@ -150,7 +160,9 @@ export const {
     setOpenSignup,
     setOpenModalAuth,
     setSizeQuery,
-    setReload
+    setReload,
+    setUpdateBalance,
+    setUpdatePayment
 } = bookingSlice.actions;
 
 export default bookingSlice.reducer;

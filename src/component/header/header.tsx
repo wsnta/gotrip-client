@@ -5,7 +5,7 @@ import { IoMdArrowDropdown } from 'react-icons/io'
 import './header.css'
 import { refreshAccessToken } from 'component/authen';
 import { useDispatch, useSelector } from 'react-redux';
-import { setOpenModalAuth, setRedirectToLogin, setReload, setUserInf, setUserLoginInf } from 'store/reducers';
+import { setOpenModalAuth, setRedirectToLogin, setReload, setUpdateBalance, setUpdatePayment, setUserInf, setUserLoginInf } from 'store/reducers';
 import axios from 'axios';
 import { Avatar, Modal, notification } from 'antd';
 import Login from 'component/authen/login/login';
@@ -16,15 +16,11 @@ import io from 'socket.io-client';
 import { NotificationPlacement } from 'antd/es/notification/interface';
 
 export default function Header() {
-    const socket = io(serverHostIO);
     const history = useNavigate();
     const dispatch = useDispatch();
-    const { userLoginInf, openSignup, openModalAuth, redirectToLogin, userInf } = useSelector((state: any) => state);
+    const { userLoginInf, openSignup, openModalAuth, redirectToLogin, updateBalance, updatePayment } = useSelector((state: any) => state);
     const [isLoading, setIsLoading] = useState(false)
     const [api, contextHolder] = notification.useNotification();
-    const [update, setUpdate] = useState(false)
-    const [updateBalance, setUpdateBalance] = useState(false)
-
     useEffect(() => {
         const checkAuth = async () => {
             try {
@@ -110,62 +106,66 @@ export default function Header() {
         });
     }, []);
 
+    // useEffect(() => {
+
+    //     return  () => {
+    //         const socket = io(serverHostIO);
+    //         socket.on('transactions', async (data) => {
+    //             const bookingService = localStorage.getItem('bookingService')
+    //             if (bookingService) {
+    //                 const parseBooking = JSON.parse(bookingService)
+    //                 const checkData = data.every((transaction: any) =>
+    //                     Number(transaction.creditAmount) === Number(parseBooking.price) &&
+    //                     String(transaction.description).includes(String(parseBooking.bookingId)))
+    
+    //                 if (checkData) {
+    //                     setUpdate(true)
+    //                 }
+    //             }
+    //         });
+    
+    //         if (userInf && userInf.identifier) {
+    //             socket.on('identifier', async (data) => {
+    //                 const checked = data === String(userInf.identifier)
+    //                 if (checked) {
+    //                     setUpdateBalance(true)
+    //                 }
+    //             });
+    //         }
+    //     }
+
+    // }, [userInf]);
+
+
     useEffect(() => {
-        socket.on('transactions', async (data) => {
-            const bookingService = localStorage.getItem('bookingService')
-            if (bookingService) {
-                const parseBooking = JSON.parse(bookingService)
-                const checkData = data.every((transaction: any) =>
-                    Number(transaction.creditAmount) === Number(parseBooking.price) &&
-                    String(transaction.description).includes(String(parseBooking.bookingId)))
-
-                if (checkData) {
-                    setUpdate(true)
-                }
-            }
-        });
-
-    }, [socket, userLoginInf]);
-
-    useEffect(() => {
-        if (userInf && userInf.identifier) {
-            socket.on('identifier', async (data) => {
-                const checked = data === String(userInf.identifier)
-                if (checked) {
-                    setUpdateBalance(true)
-                }
-            });
-        }
-    }, [socket, userInf]);
-
-
-    useEffect(() => {
-        if (update === true) {
+        if (updatePayment === true) {
             const checkData = () => {
                 const bookingService = localStorage.getItem('bookingService')
                 if (bookingService) {
                     const parseBooking = JSON.parse(bookingService)
                     openNotification('topLeft', `Thanh toán thành công (${parseBooking.bookingId})`)
-                    setUpdate(false)
+                    dispatch(setUpdatePayment(false))
                     dispatch(setReload(true))
                 }
             }
             checkData()
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [update])
+    }, [updatePayment])
 
     useEffect(() => {
         if (updateBalance === true) {
             const checkData = () => {
                 openNotification('topLeft', `Nạp tiền thành công`)
-                setUpdateBalance(false)
+                dispatch(setUpdateBalance(false))
                 dispatch(setReload(true))
             }
             checkData()
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updateBalance])
+
+    console.log('openModalAuth', openModalAuth)
 
     return (
         <div id="header">
