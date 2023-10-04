@@ -13,6 +13,7 @@ import { dataCountry, mapOption } from 'utils/data-country';
 import axios from 'axios';
 import Sidebar from 'component/sidebar/sidebar';
 import Footer from 'component/footer/footer';
+import { serverHostIO } from 'utils/links/links';
 const { Option } = Select;
 
 dayjs.extend(customParseFormat);
@@ -53,6 +54,20 @@ function Home() {
     const [onchangeValueDepart, setOnchangeValueDepart] = useState('DAD');
     const [onchangeValueToReturn, setOnchangeValueToReturn] = useState('SGN');
     const [twoWay, setTwoWay] = useState(false)
+
+    const [customDates, setCustomDates] = useState<any[]>([])
+    
+    useEffect(() => {
+        const fetchPrice = async () => {
+            try{
+                const res = await axios.get(`${serverHostIO}/api/getListPriceCalendar?startPoint=${onchangeValueDepart}&endPoint=${onchangeValueToReturn}`)
+                setCustomDates(res.data)
+            }catch(error){
+                console.log(error)
+            }
+        }
+        fetchPrice()
+    },[onchangeValueDepart, onchangeValueToReturn])
 
     const flatChildren: any[] = mapOption.flatMap(item => item.children || [])
 
@@ -166,18 +181,13 @@ function Home() {
 
     const isStartNull = dayjs(todayDate.toDate()).format('DDMMYYYY')
 
-    // const queryParams = new URLSearchParams(filters).toString();
+    function formatNumberToK(number:number) {
+        return (number / 1000000).toFixed(3) + "k";
+      }
 
-    const customDates: { date: string; value: string }[] = [
-        { date: '24072023', value: '20$' },
-        { date: '25072023', value: '25$' },
-        { date: '26072023', value: '25$' },
-    ];
-
-    const defaultPrice = null;
     const dateRenderStart = (current: any) => {
         const dateString = dayjs(current).format('DDMMYYYY');
-        const customDate = customDates.find((item) => item.date === dateString);
+        const customDate = (customDates && Array.isArray(customDates)) && customDates.find((item) => String(item.DepartDate) === String(dateString));
         const isSelectedDate = startDate === dateString;
         const isDisabledDate = disabledDateStart(current)
         return (
@@ -186,9 +196,11 @@ function Home() {
                 {!dayjs(current).isBefore(dayjs().startOf('day')) && !isDisabledDate && (
                     <>
                         {customDate ? (
-                            <div className={`custom-price ${isSelectedDate ? 'selected' : ''}`}>{customDate.value}</div>
+                            <div style={{
+                                fontSize:'10px'
+                            }} className={`custom-price ${isSelectedDate ? 'selected' : ''}`}>{formatNumberToK(customDate.MinFareAdt)}</div>
                         ) : (
-                            <div className="custom-price default-price">{defaultPrice}</div>
+                            <div className="custom-price default-price">{null}</div>
                         )}
                     </>
                 )}
@@ -198,7 +210,7 @@ function Home() {
 
     const dateRenderEnd = (current: any) => {
         const dateString = dayjs(current).format('DDMMYYYY');
-        const customDate = customDates.find((item) => item.date === dateString);
+        const customDate = (customDates && Array.isArray(customDates)) && customDates.find((item) => String(item.DepartDate) === String(dateString));
         const isSelectedDate = endDate === dateString;
         const isDisabledDate = disabledDateEnd(current)
         return (
@@ -207,9 +219,11 @@ function Home() {
                 {!dayjs(current).isBefore(dayjs().startOf('day')) && !isDisabledDate && (
                     <>
                         {customDate ? (
-                            <div className={`custom-price ${isSelectedDate ? 'selected' : ''}`}>{customDate.value}</div>
+                            <div style={{
+                                fontSize:'10px'
+                            }} className={`custom-price ${isSelectedDate ? 'selected' : ''}`}>{formatNumberToK(customDate.MinFareAdt)}</div>
                         ) : (
-                            <div className="custom-price default-price">{defaultPrice}</div>
+                            <div className="custom-price default-price">{null}</div>
                         )}
                     </>
                 )}

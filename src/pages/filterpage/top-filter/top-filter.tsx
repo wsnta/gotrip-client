@@ -14,6 +14,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setTripType } from 'store/reducers';
 import { convertCity } from 'utils/custom/custom-format';
 import { AiOutlineEdit } from 'react-icons/ai'
+import axios from 'axios';
+import { serverHostIO } from 'utils/links/links';
 dayjs.extend(customParseFormat);
 interface TravellersType {
     adults: number,
@@ -68,6 +70,21 @@ function TopFilter() {
     const [valueInputTo, setValueInputTo] = useState('')
 
     const flatChildren: any[] = mapOption.flatMap(item => item.children || [])
+
+    const [customDates, setCustomDates] = useState<any[]>([])
+
+    useEffect(() => {
+        const fetchPrice = async () => {
+            try {
+                const res = await axios.get(`${serverHostIO}/api/getListPriceCalendar?startPoint=${flyingFrom}&endPoint=${flyingTo}`)
+                setCustomDates(res.data)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        fetchPrice()
+    }, [flyingFrom, flyingTo])
+
 
     useEffect(() => {
         if (twoWay === 'true') {
@@ -192,15 +209,13 @@ function TopFilter() {
         }
     }, [dispatch, twoWay])
 
-    const customDates: { date: string; value: string }[] = [
-        { date: '24072023', value: '20$' },
-        { date: '25072023', value: '25$' },
-        { date: '26072023', value: '25$' },
-    ];
-    const defaultPrice = null;
+    function formatNumberToK(number: number) {
+        return (number / 1000000).toFixed(3) + "k";
+    }
+
     const dateRenderStart = (current: any) => {
         const dateString = dayjs(current).format('DDMMYYYY');
-        const customDate = customDates.find((item) => item.date === dateString);
+        const customDate = (customDates && Array.isArray(customDates)) && customDates.find((item) => String(item.DepartDate) === String(dateString));
         const isSelectedDate = startDate === dateString;
         const isDisabledDate = disabledDateStart(current)
         return (
@@ -209,9 +224,11 @@ function TopFilter() {
                 {!dayjs(current).isBefore(dayjs().startOf('day')) && !isDisabledDate && (
                     <>
                         {customDate ? (
-                            <div className={`custom-price ${isSelectedDate ? 'selected' : ''}`}>{customDate.value}</div>
+                            <div style={{
+                                fontSize: '10px'
+                            }} className={`custom-price ${isSelectedDate ? 'selected' : ''}`}>{formatNumberToK(customDate.MinFareAdt)}</div>
                         ) : (
-                            <div className="custom-price default-price">{defaultPrice}</div>
+                            <div className="custom-price default-price">{null}</div>
                         )}
                     </>
                 )}
@@ -221,7 +238,7 @@ function TopFilter() {
 
     const dateRenderEnd = (current: any) => {
         const dateString = dayjs(current).format('DDMMYYYY');
-        const customDate = customDates.find((item) => item.date === dateString);
+        const customDate = (customDates && Array.isArray(customDates)) && customDates.find((item) => String(item.DepartDate) === String(dateString));
         const isSelectedDate = endDate === dateString;
         const isDisabledDate = disabledDateEnd(current)
         return (
@@ -230,9 +247,11 @@ function TopFilter() {
                 {!dayjs(current).isBefore(dayjs().startOf('day')) && !isDisabledDate && (
                     <>
                         {customDate ? (
-                            <div className={`custom-price ${isSelectedDate ? 'selected' : ''}`}>{customDate.value}</div>
+                            <div style={{
+                                fontSize: '10px'
+                            }} className={`custom-price ${isSelectedDate ? 'selected' : ''}`}>{formatNumberToK(customDate.MinFareAdt)}</div>
                         ) : (
-                            <div className="custom-price default-price">{defaultPrice}</div>
+                            <div className="custom-price default-price">{null}</div>
                         )}
                     </>
                 )}
@@ -504,7 +523,7 @@ function TopFilter() {
                 <div className='mini-filter-flex flex-wrap'>
                     <p className='dsc-mini-filter'>{convertCity(startPoint)} ({startPoint}) - {convertCity(endPoint)} ({endPoint})</p>
                     <p className='dsc-mini-filter blue-color' style={{
-                        marginLeft:'auto'
+                        marginLeft: 'auto'
                     }} onClick={showDrawer}>Sửa <AiOutlineEdit /></p>
                 </div>
             </div>

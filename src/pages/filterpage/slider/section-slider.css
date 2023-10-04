@@ -268,7 +268,7 @@
     transform: translate(-50%,-50%);
     transition: all .3s ease;
     width: 40px;
-    z-index: 1;
+    z-index: 6;
 }
 
 .slider-action.section.prev{

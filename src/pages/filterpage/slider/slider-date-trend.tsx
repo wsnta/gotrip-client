@@ -12,29 +12,6 @@ import { LoadingFrame } from 'component/loading-frame/loadingFrame';
 
 dayjs.extend(customParseFormat);
 
-function SampleNextArrow(props: any) {
-    const { onClick } = props;
-    return (
-        <div
-            className="slider-action next section"
-            onClick={onClick}
-        >
-            {">"}
-        </div>
-    );
-}
-function SamplePrevArrow(props: any) {
-    const { onClick } = props;
-    return (
-        <div
-            className="slider-action section prev"
-            onClick={onClick}
-        >
-            {"<"}
-        </div>
-    );
-}
-
 interface ListPriceType {
     Airline: string,
     DepartDate: string,
@@ -43,7 +20,7 @@ interface ListPriceType {
     MinFareAdtFormat: string,
     MinTotalAdtFormat: string,
     Key: string,
-    ListFareData: any[],
+    _id: string,
 }
 
 type Iprops = {
@@ -65,55 +42,54 @@ function SliderDateTrend(props: Iprops) {
 
     const [listTrends, setListTrends] = useState<ListPriceType[]>([])
     const [isLoading, setIsLoading] = useState(false)
+    const [totalCount, setTotalCount] = useState(0)
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [prevIndex, setPrevIndex] = useState(1)
+    const [maxPage, setMaxPage] = useState(0)
 
     const sliderRef = useRef<Slider | null>(null);
 
     useEffect(() => {
         const fetchListDate = async () => {
-
-            try{
+            try {
                 setIsLoading(true)
-                const responses = await axios.get(`${serverHostIO}/api/list-price?startPoint=${StartPoint}&endPoint=${EndPoint}&departDate=${DepartDate}`);
-                setListTrends(responses.data)
+                const responses = await axios.get(`${serverHostIO}/api/list-price?startPoint=${String(StartPoint)}&endPoint=${String(EndPoint)}&departDate=${DepartDate}&page=${prevIndex}&itemsPerPage=${5}`);
+                setListTrends(responses.data.data)
+                setTotalCount(responses.data.totalCount)
+                setMaxPage(responses.data.totalPages)
                 setIsLoading(false)
-            }catch(error){
+            } catch (error) {
                 console.error(error)
-            }finally{
+            } finally {
                 setIsLoading(false)
             }
         }
         fetchListDate()
-    }, [DepartDate, EndPoint, StartPoint])
+    }, [DepartDate, EndPoint, StartPoint, prevIndex])
 
 
-    const updateUrlWithFilters = (value: string) => {
+    function SampleNextArrow(props: any) {
+        return (
+            <></>
+        );
+    }
 
-        const filters = {
-            startPoint: StartPoint,
-            endPoint: EndPoint,
-            adults: adults,
-            children: children,
-            Inf: Inf,
-            departDate: value,
-            returnDate: returnDate,
-            twoWay: twoWay
-        };
-        const queryParams = new URLSearchParams(filters).toString();
-
-        const queryString = encodeURIComponent(queryParams)
-        history(`/filtered?${queryString}`)
-    };
+    function SamplePrevArrow(props: any) {
+        return (
+            <></>
+        );
+    }
 
     const settings = {
         dots: false,
         infinite: true,
-        slidesToShow: listTrends.length > 4 ? 5 : 2,
+        slidesToShow: 5,
         slidesToScroll: 5,
-        nextArrow: <SampleNextArrow />,
-        prevArrow: <SamplePrevArrow />,
-        className: 'slider-sport b',
-        centerMode: true,
+        nextArrow: <SampleNextArrow disable={false} />,
+        prevArrow: <SamplePrevArrow disable={false} />,
+        // centerMode: true,
         centerPadding: '16px',
+        screenLeft: true,
         appendDots: (dots: any) => (
             <div>
                 <ul style={{ display: 'none' }}>{dots}</ul>
@@ -161,35 +137,100 @@ function SliderDateTrend(props: Iprops) {
         ]
     };
 
-    useEffect(() => {
-        const activeItemIndex = listTrends.findIndex((element) => element.DepartDate === DepartDate);
-        if (activeItemIndex !== -1 && sliderRef.current != null) {
-            sliderRef.current.slickGoTo(activeItemIndex);
+    const updateUrlWithFilters = (value: string, index: number) => {
+        // setCurrentIndex(index)
+        const filters = {
+            startPoint: StartPoint,
+            endPoint: EndPoint,
+            adults: adults,
+            children: children,
+            Inf: Inf,
+            departDate: value,
+            returnDate: returnDate,
+            twoWay: twoWay
+        };
+        const queryParams = new URLSearchParams(filters).toString();
+
+        const queryString = encodeURIComponent(queryParams)
+        history(`/filtered?${queryString}`)
+    };
+
+    const handleNext = () => {
+        const existing = currentIndex
+        if (totalCount - existing <= 5) {
+            if (sliderRef.current != null) {
+                sliderRef.current.slickGoTo(existing + (totalCount - existing));
+                setCurrentIndex(prev => prev + (totalCount - existing))
+                if(prevIndex >= maxPage){
+                    setPrevIndex(maxPage)
+                }else{
+                    setPrevIndex(prev => prev + 1)
+                }
+            }
+        } else {
+            if (sliderRef.current != null) {
+                sliderRef.current.slickGoTo(existing + 5);
+                setCurrentIndex(prev => prev + 5)
+                if(prevIndex >= maxPage){
+                    setPrevIndex(maxPage)
+                }else{
+                    setPrevIndex(prev => prev + 1)
+                }
+            }
         }
-    }, [DepartDate, EndPoint, StartPoint, listTrends]);
+    }
+
+    const handlePrev = () => {
+        const existing = currentIndex;
+        if (existing <= 5) {
+            if (sliderRef.current !== null) {
+                sliderRef.current.slickGoTo(0);
+                setCurrentIndex(0);
+                setPrevIndex(1);
+            }
+        } else {
+            if (sliderRef.current !== null) {
+                sliderRef.current.slickGoTo(existing - 5);
+                setCurrentIndex(prev => prev - 5);
+                setPrevIndex(prev => prev - 1);
+            }
+        }
+    };
 
     return (
         <>
-        {isLoading ? <LoadingFrame borderRadius={'4px'} gridCol='span 14 / span 14' divWidth={'100%'} divHeight={'84px'}/> : <section className='section-lay-page-trend'>
-            <div className='container-section'>
-                <div className='gr-slider'>
-                    <div className="slider-container">
-                        <Slider ref={sliderRef} {...settings}>
-                            {listTrends.map((element) => {
-                                return (
-                                    <div className='mcard match-sched-card'>
-                                        <div onClick={() => updateUrlWithFilters(element.DepartDate)} className={DepartDate && DepartDate === element.DepartDate ? 'mcard-inner active' : 'mcard-inner'}>
-                                            <h3 className="title-trend">{formatNgayThangNam4(element.DepartDate)}</h3>
-                                            <h3 className="title-trend">{element.MinFareAdtFormat} VNĐ</h3>
+            {isLoading ? <LoadingFrame borderRadius={'4px'} gridCol='span 14 / span 14' divWidth={'100%'} divHeight={'84px'} /> : <section className='section-lay-page-trend'>
+                <div className='container-section'>
+                    <div className='gr-slider'>
+                        <div className="slider-container">
+                            <div
+                                className="slider-action section prev"
+                                onClick={() => handlePrev()}
+                            >
+                                {"<"}
+                            </div>
+                            <Slider {...settings} ref={sliderRef} className='slick-custom'>
+                                {listTrends.map((element, index) => {
+                                    return (
+                                        <div className='mcard match-sched-card' key={element._id}>
+                                            <div onClick={() => updateUrlWithFilters(element.DepartDate, index)} className={DepartDate && DepartDate === element.DepartDate ? 'mcard-inner active' : 'mcard-inner'}>
+                                                <h3 className="title-trend">{formatNgayThangNam4(element.DepartDate)}</h3>
+                                                <h3 className="title-trend">{element.MinFareAdtFormat} VNĐ</h3>
+                                            </div>
                                         </div>
-                                    </div>
-                                )
-                            })}
-                        </Slider>
+                                    )
+                                })}
+                            </Slider>
+                            <div
+                                className="slider-action next section"
+                                onClick={() => handleNext()}
+                            >
+                                {">"}
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>}
+            </section>}
         </>
     )
 }
