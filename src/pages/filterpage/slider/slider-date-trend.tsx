@@ -34,18 +34,62 @@ type Iprops = {
     twoWay: string
 }
 
+const NextClick = (props: any) => {
+    const {onClick} = props
+    return <div
+        className="slider-action section next"
+        onClick={onClick}
+    >
+        {"<"}
+    </div> 
+}
+
+const PrevClick = (props: any) => {
+    const {onClick} = props
+    return <div
+        className="slider-action section prev"
+        onClick={onClick}
+    >
+        {"<"}
+    </div> 
+}
+
 function SliderDateTrend(props: Iprops) {
 
     const { DepartDate, EndPoint, StartPoint, Inf, adults, children, returnDate, twoWay } = props
 
     const history = useNavigate();
 
-    const [listTrends, setListTrends] = useState<ListPriceType[]>([])
     const [isLoading, setIsLoading] = useState(false)
-    const [totalCount, setTotalCount] = useState(0)
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [prevIndex, setPrevIndex] = useState(1)
-    const [maxPage, setMaxPage] = useState(0)
+
+    const [items, setItems] = useState<ListPriceType[]>([]);
+    const [page, setPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(5)
+    const [message, setMessage] = useState('');
+    const [nextprev, setnextprev] = useState('')
+
+    useEffect(() => {
+        const handleResize = () => {
+            const windowWidth = window.innerWidth;
+
+            if (windowWidth < 1165) {
+                setItemsPerPage(4);
+            } 
+            if (windowWidth < 1095) {
+                setItemsPerPage(3);
+            }
+            if (windowWidth < 555){
+                setItemsPerPage(2);
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        handleResize();
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     const sliderRef = useRef<Slider | null>(null);
 
@@ -53,41 +97,28 @@ function SliderDateTrend(props: Iprops) {
         const fetchListDate = async () => {
             try {
                 setIsLoading(true)
-                const responses = await axios.get(`${serverHostIO}/api/list-price?startPoint=${String(StartPoint)}&endPoint=${String(EndPoint)}&departDate=${DepartDate}&page=${prevIndex}&itemsPerPage=${5}`);
-                setListTrends(responses.data.data)
-                setTotalCount(responses.data.totalCount)
-                setMaxPage(responses.data.totalPages)
+                const res = await axios.get(`${serverHostIO}/api/list-price?startPoint=${String(StartPoint)}&endPoint=${String(EndPoint)}&DepartDate=${DepartDate}`)
+                setItems(res.data.prices);
+                setMessage(res.data.message)
                 setIsLoading(false)
             } catch (error) {
-                console.error(error)
+                console.log(error)
+                setIsLoading(false)
             } finally {
                 setIsLoading(false)
             }
         }
         fetchListDate()
-    }, [DepartDate, EndPoint, StartPoint, prevIndex])
+    }, [DepartDate, EndPoint, StartPoint]);
 
-
-    function SampleNextArrow(props: any) {
-        return (
-            <></>
-        );
-    }
-
-    function SamplePrevArrow(props: any) {
-        return (
-            <></>
-        );
-    }
 
     const settings = {
-        dots: false,
         infinite: true,
-        slidesToShow: 5,
-        slidesToScroll: 5,
-        nextArrow: <SampleNextArrow disable={false} />,
-        prevArrow: <SamplePrevArrow disable={false} />,
-        // centerMode: true,
+        speed: 500,
+        slidesToShow: itemsPerPage,
+        slidesToScroll: itemsPerPage,
+        nextArrow: <NextClick/>,
+        prevArrow: <PrevClick/>,
         centerPadding: '16px',
         screenLeft: true,
         appendDots: (dots: any) => (
@@ -99,53 +130,52 @@ function SliderDateTrend(props: Iprops) {
             {
                 breakpoint: 1165,
                 settings: {
-                    slidesToShow: 4,
-                    slidesToScroll: 4,
-                    initialSlide: 4
+                    slidesToShow: itemsPerPage,
+                    slidesToScroll: itemsPerPage,
+                    initialSlide: itemsPerPage
                 }
             },
             {
                 breakpoint: 1094,
                 settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 3,
-                    initialSlide: 3
+                    slidesToShow: itemsPerPage,
+                    slidesToScroll: itemsPerPage,
+                    initialSlide: itemsPerPage
                 }
             },
             {
                 breakpoint: 1000,
                 settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 3,
-                    initialSlide: 3
+                    slidesToShow: itemsPerPage,
+                    slidesToScroll: itemsPerPage,
+                    initialSlide: itemsPerPage
                 }
             },
             {
                 breakpoint: 745,
                 settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 3
+                    slidesToShow: itemsPerPage,
+                    slidesToScroll: itemsPerPage
                 }
             },
             {
                 breakpoint: 554,
                 settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 2
+                    slidesToShow: itemsPerPage,
+                    slidesToScroll: itemsPerPage
                 }
             }
         ]
     };
 
     const updateUrlWithFilters = (value: string, index: number) => {
-        // setCurrentIndex(index)
         const filters = {
             startPoint: StartPoint,
             endPoint: EndPoint,
             adults: adults,
             children: children,
             Inf: Inf,
-            departDate: value,
+            departDate: String(dayjs(String(value), 'YYYYMMDD').format('DDMMYYYY')),
             returnDate: returnDate,
             twoWay: twoWay
         };
@@ -155,47 +185,16 @@ function SliderDateTrend(props: Iprops) {
         history(`/filtered?${queryString}`)
     };
 
-    const handleNext = () => {
-        const existing = currentIndex
-        if (totalCount - existing <= 5) {
-            if (sliderRef.current != null) {
-                sliderRef.current.slickGoTo(existing + (totalCount - existing));
-                setCurrentIndex(prev => prev + (totalCount - existing))
-                if(prevIndex >= maxPage){
-                    setPrevIndex(maxPage)
-                }else{
-                    setPrevIndex(prev => prev + 1)
-                }
-            }
-        } else {
-            if (sliderRef.current != null) {
-                sliderRef.current.slickGoTo(existing + 5);
-                setCurrentIndex(prev => prev + 5)
-                if(prevIndex >= maxPage){
-                    setPrevIndex(maxPage)
-                }else{
-                    setPrevIndex(prev => prev + 1)
-                }
-            }
-        }
-    }
+    // const handleNext = () => {
+    //     setnextprev('next')
+    //     setPage(page + 1);
+    // };
 
-    const handlePrev = () => {
-        const existing = currentIndex;
-        if (existing <= 5) {
-            if (sliderRef.current !== null) {
-                sliderRef.current.slickGoTo(0);
-                setCurrentIndex(0);
-                setPrevIndex(1);
-            }
-        } else {
-            if (sliderRef.current !== null) {
-                sliderRef.current.slickGoTo(existing - 5);
-                setCurrentIndex(prev => prev - 5);
-                setPrevIndex(prev => prev - 1);
-            }
-        }
-    };
+
+    // const handlePrev = () => {
+    //     setnextprev('prev')
+    //     setPage(page - 1);
+    // };
 
     return (
         <>
@@ -203,30 +202,36 @@ function SliderDateTrend(props: Iprops) {
                 <div className='container-section'>
                     <div className='gr-slider'>
                         <div className="slider-container">
-                            <div
+                            {/* <div
+                            style={{
+                                display: message === 'Đầu' ? 'none' : ''
+                            }}
                                 className="slider-action section prev"
                                 onClick={() => handlePrev()}
                             >
                                 {"<"}
-                            </div>
+                            </div> */}
                             <Slider {...settings} ref={sliderRef} className='slick-custom'>
-                                {listTrends.map((element, index) => {
+                                {items.map((element, index) => {
                                     return (
                                         <div className='mcard match-sched-card' key={element._id}>
-                                            <div onClick={() => updateUrlWithFilters(element.DepartDate, index)} className={DepartDate && DepartDate === element.DepartDate ? 'mcard-inner active' : 'mcard-inner'}>
-                                                <h3 className="title-trend">{formatNgayThangNam4(element.DepartDate)}</h3>
-                                                <h3 className="title-trend">{element.MinFareAdtFormat} VNĐ</h3>
+                                            <div onClick={() => updateUrlWithFilters(element.DepartDate, index)} className={DepartDate && String(DepartDate) === String(dayjs(String(element.DepartDate), 'YYYYMMDD').format('DDMMYYYY')) ? 'mcard-inner active' : 'mcard-inner'}>
+                                                <h3 className="title-trend">{formatNgayThangNam4(String(dayjs(String(element.DepartDate), 'YYYYMMDD').format('DDMMYYYY')))}</h3>
+                                                <h3 className="title-trend">{element.MinTotalAdtFormat} VNĐ</h3>
                                             </div>
                                         </div>
                                     )
                                 })}
                             </Slider>
-                            <div
+                            {/* <div
+                            style={{
+                                display: message === 'Đã đầy' ? 'none' : ''
+                            }}
                                 className="slider-action next section"
                                 onClick={() => handleNext()}
                             >
                                 {">"}
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

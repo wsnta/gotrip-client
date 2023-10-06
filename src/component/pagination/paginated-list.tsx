@@ -401,6 +401,8 @@ const PaginatedList = (props: IProps) => {
     };
   }, [handleResize, paginatedData]);
 
+  console.log(pagedItems)
+
   return (
     <>
       <Drawer
@@ -634,7 +636,7 @@ const PaginatedList = (props: IProps) => {
 
                     </div>
                     <div className='item-col-1'>
-                      <h3 className='text-18 text-truncate open'>{formatNumber(element.fareAdt - discountUser)} {element.Currency ?? 'VNĐ'}</h3>
+                      <h3 className='text-18 text-truncate open'>{formatNumber(element.fullPriceOriginal - discountUser)} {element.Currency ?? 'VNĐ'}</h3>
                       {/* <p className="filter-item text-truncate">16 deals</p> */}
                       {windowWidth > 624 ? tripType === true
                         ? <button className={'view-deal'} onClick={() => addNewItem({ ...element, key: pageRevert })}>

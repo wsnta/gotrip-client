@@ -11,29 +11,6 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { LoadingFrame } from 'component/loading-frame/loadingFrame';
 dayjs.extend(customParseFormat);
 
-function SampleNextArrow(props: any) {
-    const { onClick } = props;
-    return (
-        <div
-            className="slider-action next section"
-            onClick={onClick}
-        >
-            {">"}
-        </div>
-    );
-}
-function SamplePrevArrow(props: any) {
-    const { onClick } = props;
-    return (
-        <div
-            className="slider-action section prev"
-            onClick={onClick}
-        >
-            {"<"}
-        </div>
-    );
-}
-
 interface ListPriceType {
     Airline: string,
     DepartDate: string,
@@ -42,7 +19,7 @@ interface ListPriceType {
     MinFareAdtFormat: string,
     MinTotalAdtFormat: string,
     Key: string,
-    ListFareData: any[],
+    _id: string,
 }
 
 type Iprops = {
@@ -56,6 +33,26 @@ type Iprops = {
     twoWay: string
 }
 
+const NextClick = (props: any) => {
+    const {onClick} = props
+    return <div
+        className="slider-action section next"
+        onClick={onClick}
+    >
+        {"<"}
+    </div> 
+}
+
+const PrevClick = (props: any) => {
+    const {onClick} = props
+    return <div
+        className="slider-action section prev"
+        onClick={onClick}
+    >
+        {"<"}
+    </div> 
+}
+
 function SliderDateTrendReturn(props: Iprops) {
 
     const { DepartDate, EndPoint, StartPoint, Inf, adults, children, returnDate, twoWay } = props
@@ -63,25 +60,53 @@ function SliderDateTrendReturn(props: Iprops) {
     const history = useNavigate();
     const sliderRef2 = useRef<Slider | null>(null);
 
-    const [listTrends, setListTrends] = useState<ListPriceType[]>([])
+    const [items, setItems] = useState<ListPriceType[]>([]);
+    const [page, setPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false)
+    const [itemsPerPage, setItemsPerPage] = useState(5)
+    const [message, setMessage] = useState('');
+
+    useEffect(() => {
+        const handleResize = () => {
+            const windowWidth = window.innerWidth;
+
+            if (windowWidth < 1165) {
+                setItemsPerPage(4);
+            } 
+            if (windowWidth < 1095) {
+                setItemsPerPage(3);
+            }
+            if (windowWidth < 555){
+                setItemsPerPage(2);
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        handleResize();
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
 
     useEffect(() => {
         const fetchListDate = async () => {
-
-            try{
+            try {
                 setIsLoading(true)
-                const responses = await axios.get(`${serverHostIO}/api/list-price?startPoint=${EndPoint}&endPoint=${StartPoint}&departDate=${returnDate}`);
-                setListTrends(responses.data)
+                const res = await axios.get(`${serverHostIO}/api/list-price?startPoint=${String(EndPoint)}&endPoint=${String(StartPoint)}&DepartDate=${returnDate}`)
+                setItems(res.data.prices);
+                setMessage(res.data.message)
                 setIsLoading(false)
-            }catch(error){
-                console.error(error)
-            }finally{
+            } catch (error) {
+                console.log(error)
+                setIsLoading(false)
+            } finally {
                 setIsLoading(false)
             }
         }
         fetchListDate()
-    }, [EndPoint, StartPoint, returnDate])
+    }, [returnDate, EndPoint, StartPoint, page, itemsPerPage]);
 
 
     const updateUrlWithFilters = (value: string) => {
@@ -93,7 +118,7 @@ function SliderDateTrendReturn(props: Iprops) {
             children: children,
             Inf: Inf,
             departDate: DepartDate,
-            returnDate: value,
+            returnDate: String(dayjs(String(value), 'YYYYMMDD').format('DDMMYYYY')),
             twoWay: twoWay
         };
         const queryParams = new URLSearchParams(filters).toString();
@@ -105,13 +130,12 @@ function SliderDateTrendReturn(props: Iprops) {
     const settings = {
         dots: false,
         infinite: true,
-        slidesToShow: listTrends.length > 4 ? 5 : 2,
-        slidesToScroll: 5,
-        nextArrow: <SampleNextArrow />,
-        prevArrow: <SamplePrevArrow />,
-        className: 'slider-sport b',
-        centerMode: true,
+        nextArrow: <NextClick/>,
+        prevArrow: <PrevClick/>,
+        slidesToShow: itemsPerPage,
+        slidesToScroll: itemsPerPage,
         centerPadding: '16px',
+        screenLeft: true,
         appendDots: (dots: any) => (
             <div>
                 <ul style={{ display: 'none' }}>{dots}</ul>
@@ -121,9 +145,9 @@ function SliderDateTrendReturn(props: Iprops) {
             {
                 breakpoint: 1165,
                 settings: {
-                    slidesToShow: 4,
-                    slidesToScroll: 4,
-                    initialSlide: 4
+                    slidesToShow: itemsPerPage,
+                    slidesToScroll: itemsPerPage,
+                    initialSlide: itemsPerPage
                 }
             },
             {
@@ -158,37 +182,56 @@ function SliderDateTrendReturn(props: Iprops) {
             }
         ]
     };
-    
 
-    useEffect(() => {
-        const activeItemIndex = listTrends.findIndex((element) => element.DepartDate === returnDate);
-        if (activeItemIndex !== -1 && sliderRef2.current != null) {
-            sliderRef2.current.slickGoTo(activeItemIndex);
-        }
-    }, [returnDate, EndPoint, StartPoint, listTrends]);
+    const handleNext = () => {
+        setPage(page + 1);
+    };
+
+
+    const handlePrev = () => {
+        setPage(page - 1);
+    };
 
     return (
-        <>
-        {isLoading ? <LoadingFrame borderRadius={'4px'} gridCol='span 14 / span 14' divWidth={'100%'} divHeight={'84px'}/> : <section className='section-lay-page-trend'>
-            <div className='container-section'>
-                <div className='gr-slider'>
-                    <div className="slider-container">
-                        <Slider ref={sliderRef2} {...settings}>
-                            {listTrends.map((element) => {
-                                return (
-                                    <div className='mcard match-sched-card'>
-                                        <div onClick={() => updateUrlWithFilters(element.DepartDate)} className={returnDate && returnDate === element.DepartDate ? 'mcard-inner active' : 'mcard-inner'}>
-                                            <h3 className="title-trend">{formatNgayThangNam4(element.DepartDate)}</h3>
-                                            <h3 className="title-trend">{element.MinFareAdtFormat} VNĐ</h3>
+       <>
+            {isLoading ? <LoadingFrame borderRadius={'4px'} gridCol='span 14 / span 14' divWidth={'100%'} divHeight={'84px'} /> : <section className='section-lay-page-trend'>
+                <div className='container-section'>
+                    <div className='gr-slider'>
+                        <div className="slider-container">
+                            {/* <div
+                            style={{
+                                display: message === 'Đầu' ? 'none' : ''
+                            }}
+                                className="slider-action section prev"
+                                onClick={() => handlePrev()}
+                            >
+                                {"<"}
+                            </div> */}
+                            <Slider {...settings} ref={sliderRef2} className='slick-custom'>
+                                {items.map((element, index) => {
+                                    return (
+                                        <div className='mcard match-sched-card' key={element._id}>
+                                            <div onClick={() => updateUrlWithFilters(element.DepartDate)} className={DepartDate && String(DepartDate) === String(dayjs(String(element.DepartDate), 'YYYYMMDD').format('DDMMYYYY')) ? 'mcard-inner active' : 'mcard-inner'}>
+                                                <h3 className="title-trend">{formatNgayThangNam4(String(dayjs(String(element.DepartDate), 'YYYYMMDD').format('DDMMYYYY')))}</h3>
+                                                <h3 className="title-trend">{element.MinTotalAdtFormat} VNĐ</h3>
+                                            </div>
                                         </div>
-                                    </div>
-                                )
-                            })}
-                        </Slider>
+                                    )
+                                })}
+                            </Slider>
+                            {/* <div
+                            style={{
+                                display: message === 'Đã đầy' ? 'none' : ''
+                            }}
+                                className="slider-action next section"
+                                onClick={() => handleNext()}
+                            >
+                                {">"}
+                            </div> */}
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>}
+            </section>}
         </>
     )
 }
