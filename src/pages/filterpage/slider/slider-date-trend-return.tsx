@@ -39,7 +39,7 @@ const NextClick = (props: any) => {
         className="slider-action section next"
         onClick={onClick}
     >
-        {"<"}
+        {">"}
     </div> 
 }
 
@@ -65,6 +65,8 @@ function SliderDateTrendReturn(props: Iprops) {
     const [isLoading, setIsLoading] = useState(false)
     const [itemsPerPage, setItemsPerPage] = useState(5)
     const [message, setMessage] = useState('');
+    const [totalCount, settotalCount] = useState(1)
+    const [skip, setSkip] = useState(0); 
 
     useEffect(() => {
         const handleResize = () => {
@@ -94,10 +96,16 @@ function SliderDateTrendReturn(props: Iprops) {
         const fetchListDate = async () => {
             try {
                 setIsLoading(true)
-                const res = await axios.get(`${serverHostIO}/api/list-price?startPoint=${String(EndPoint)}&endPoint=${String(StartPoint)}&DepartDate=${returnDate}`)
+                const res = await axios.get(`${serverHostIO}/api/list-price?startPoint=${String(EndPoint)}&endPoint=${String(StartPoint)}&DepartDate=${returnDate}&limit=${itemsPerPage}`)
                 setItems(res.data.prices);
-                setMessage(res.data.message)
+                setMessage(res.data.message);
+                settotalCount(res.data.totalCount)
+                setSkip(res.data.targetSkip)
                 setIsLoading(false)
+                const activeItemIndex = res.data.prices.findIndex((element:any) => String(dayjs(String(element.DepartDate), 'YYYYMMDD').format('DDMMYYYY')) === String(returnDate));
+                if (activeItemIndex !== -1 && sliderRef2.current) {
+                    sliderRef2.current.slickGoTo(activeItemIndex, true);
+                }
             } catch (error) {
                 console.log(error)
                 setIsLoading(false)
@@ -106,7 +114,7 @@ function SliderDateTrendReturn(props: Iprops) {
             }
         }
         fetchListDate()
-    }, [returnDate, EndPoint, StartPoint, page, itemsPerPage]);
+    }, [EndPoint, StartPoint, returnDate]);
 
 
     const updateUrlWithFilters = (value: string) => {
@@ -130,8 +138,8 @@ function SliderDateTrendReturn(props: Iprops) {
     const settings = {
         dots: false,
         infinite: true,
-        nextArrow: <NextClick/>,
-        prevArrow: <PrevClick/>,
+        // nextArrow: <NextClick/>,
+        // prevArrow: <PrevClick/>,
         slidesToShow: itemsPerPage,
         slidesToScroll: itemsPerPage,
         centerPadding: '16px',
@@ -183,14 +191,71 @@ function SliderDateTrendReturn(props: Iprops) {
         ]
     };
 
-    const handleNext = () => {
-        setPage(page + 1);
+    const handleNext = async () => {
+        if(skip + itemsPerPage <= totalCount - itemsPerPage){
+            try {
+                setIsLoading(true)
+                const res = await axios.get(`${serverHostIO}/api/list-price?startPoint=${String(EndPoint)}&endPoint=${String(StartPoint)}&DepartDate=${returnDate}&skipReq=${skip + itemsPerPage}&limit=${itemsPerPage}`)
+                setItems(res.data.prices);
+                setMessage(res.data.message);
+                settotalCount(res.data.totalCount)
+                setSkip(res.data.targetSkip)
+                setIsLoading(false)
+                const activeItemIndex = res.data.prices.findIndex((element:any) => String(dayjs(String(element.DepartDate), 'YYYYMMDD').format('DDMMYYYY')) === String(returnDate));
+                if (activeItemIndex !== -1 && sliderRef2.current) {
+                    sliderRef2.current.slickGoTo(activeItemIndex, true);
+                }
+            } catch (error) {
+                // console.log(error)
+                setIsLoading(false)
+            } finally {
+                setIsLoading(false)
+            }
+        }else if (skip + itemsPerPage > totalCount - itemsPerPage){
+            try {
+                setIsLoading(true)
+                const res = await axios.get(`${serverHostIO}/api/list-price?startPoint=${String(EndPoint)}&endPoint=${String(StartPoint)}&DepartDate=${returnDate}&skipReq=${totalCount - itemsPerPage}&limit=${itemsPerPage}`)
+                setItems(res.data.prices);
+                setMessage(res.data.message);
+                settotalCount(res.data.totalCount)
+                setSkip(res.data.targetSkip)
+                setIsLoading(false)
+                const activeItemIndex = res.data.prices.findIndex((element:any) => String(dayjs(String(element.DepartDate), 'YYYYMMDD').format('DDMMYYYY')) === String(returnDate));
+                if (activeItemIndex !== -1 && sliderRef2.current) {
+                    sliderRef2.current.slickGoTo(activeItemIndex, true);
+                }
+            } catch (error) {
+                // console.log(error)
+                setIsLoading(false)
+            } finally {
+                setIsLoading(false)
+            }
+        }
     };
 
 
-    const handlePrev = () => {
-        setPage(page - 1);
-    };
+    const handlePrev = async () => {
+        if(skip - itemsPerPage > 0){
+            try {
+                setIsLoading(true)
+                const res = await axios.get(`${serverHostIO}/api/list-price?startPoint=${String(EndPoint)}&endPoint=${String(StartPoint)}&DepartDate=${returnDate}&skipReq=${skip - itemsPerPage}&limit=${itemsPerPage}`)
+                setItems(res.data.prices);
+                setMessage(res.data.message);
+                settotalCount(res.data.totalCount)
+                setSkip(res.data.targetSkip)
+                setIsLoading(false)
+                const activeItemIndex = res.data.prices.findIndex((element:any) => String(dayjs(String(element.DepartDate), 'YYYYMMDD').format('DDMMYYYY')) === String(returnDate));
+                if (activeItemIndex !== -1 && sliderRef2.current) {
+                    sliderRef2.current.slickGoTo(activeItemIndex, true);
+                }
+            } catch (error) {
+                // console.log(error)
+                setIsLoading(false)
+            } finally {
+                setIsLoading(false)
+            }
+        }
+    }
 
     return (
        <>
@@ -198,7 +263,7 @@ function SliderDateTrendReturn(props: Iprops) {
                 <div className='container-section'>
                     <div className='gr-slider'>
                         <div className="slider-container">
-                            {/* <div
+                            <div
                             style={{
                                 display: message === 'Đầu' ? 'none' : ''
                             }}
@@ -206,12 +271,12 @@ function SliderDateTrendReturn(props: Iprops) {
                                 onClick={() => handlePrev()}
                             >
                                 {"<"}
-                            </div> */}
+                            </div>
                             <Slider {...settings} ref={sliderRef2} className='slick-custom'>
                                 {items.map((element, index) => {
                                     return (
                                         <div className='mcard match-sched-card' key={element._id}>
-                                            <div onClick={() => updateUrlWithFilters(element.DepartDate)} className={DepartDate && String(DepartDate) === String(dayjs(String(element.DepartDate), 'YYYYMMDD').format('DDMMYYYY')) ? 'mcard-inner active' : 'mcard-inner'}>
+                                            <div onClick={() => updateUrlWithFilters(element.DepartDate)} className={returnDate && String(returnDate) === String(dayjs(String(element.DepartDate), 'YYYYMMDD').format('DDMMYYYY')) ? 'mcard-inner active' : 'mcard-inner'}>
                                                 <h3 className="title-trend">{formatNgayThangNam4(String(dayjs(String(element.DepartDate), 'YYYYMMDD').format('DDMMYYYY')))}</h3>
                                                 <h3 className="title-trend">{element.MinTotalAdtFormat} VNĐ</h3>
                                             </div>
@@ -219,7 +284,7 @@ function SliderDateTrendReturn(props: Iprops) {
                                     )
                                 })}
                             </Slider>
-                            {/* <div
+                            <div
                             style={{
                                 display: message === 'Đã đầy' ? 'none' : ''
                             }}
@@ -227,7 +292,7 @@ function SliderDateTrendReturn(props: Iprops) {
                                 onClick={() => handleNext()}
                             >
                                 {">"}
-                            </div> */}
+                            </div>
                         </div>
                     </div>
                 </div>

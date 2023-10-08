@@ -401,8 +401,6 @@ const PaginatedList = (props: IProps) => {
     };
   }, [handleResize, paginatedData]);
 
-  console.log(pagedItems)
-
   return (
     <>
       <Drawer
